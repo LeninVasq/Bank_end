@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\auth_controller;
 use App\Http\Controllers\Api\categoria_pro_controller;
 use App\Http\Controllers\Api\categorias_pro_controller;
 use App\Http\Controllers\Api\categorias_recetas_controller;
@@ -16,8 +17,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
-//registro
-Route::post('/user/registro', [usuario_controller::class, 'registro']);
+//autentificacion
+Route::post('registro', [auth_controller::class, 'register']);
+Route::post('login', [auth_controller::class, 'login']);
 
 
 //crud de tipos de usuarios

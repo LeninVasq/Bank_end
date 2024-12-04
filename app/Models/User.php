@@ -11,30 +11,15 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    /**
-     * @var string
-     */
     protected $table = 'users';
 
-    /**
-     * The primary key associated with the table.
-     *
-     * @var string
-     */
+    
     protected $primaryKey = 'id_usuario';
 
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
+   
     public $timestamps = true;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+  
     protected $fillable = [
         'id_tipo_usuario',
         'correo',
@@ -45,21 +30,13 @@ class User extends Authenticatable
         'estado'
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
+  
     protected $hidden = [
         'clave',
         'token'
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
+   
     protected $casts = [
         'estado' => 'boolean'
     ];
@@ -70,6 +47,16 @@ class User extends Authenticatable
             'clave' => 'hashed',
         ];
     }
+    public function getAuthPassword()
+    {
+        return $this->clave; 
+    }
+
+    public function getAuthIdentifierName()
+{
+    return 'correo';
+}
+
 
     public function tipo_usuario()
     {

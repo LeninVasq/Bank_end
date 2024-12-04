@@ -12,13 +12,12 @@ use Illuminate\Validation\Rule;
 class usuario_controller extends Controller
 {
 
-   
+    
 
 
     //registro
     public function registro(Request $request)
     {
-        $user = User::email();
         $validation = Validator::make($request->all(), [
             'id_tipo_usuario' => 'required|exists:tipo_usuario,id_tipo_usuario',
             'correo' => 'required|email|unique:users,correo',
