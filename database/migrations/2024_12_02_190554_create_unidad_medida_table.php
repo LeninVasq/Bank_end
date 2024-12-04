@@ -16,7 +16,7 @@ class CreateUnidadMedidaTable extends Migration
         Schema::create('unidad_medida', function (Blueprint $table) {
             $table->id('id_unidad_medida'); // Crea la columna id_unidad_medida como llave primaria
             $table->string('nombre_unidad'); // Columna nombre_unidad
-            $table->boolean('estado'); // Columna estado (activo o inactivo)
+            $table->boolean('estado')->default(true); // Columna estado (activo o inactivo)
             $table->timestamps(); // Crea las columnas created_at y updated_at
         });
     }

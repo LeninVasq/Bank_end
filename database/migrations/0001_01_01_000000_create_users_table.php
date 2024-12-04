@@ -12,15 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id('id_usuario'); // ID de usuario como clave primaria
-            $table->string('nombre_usuario'); // Nombre del usuario
+            $table->id('id_usuario'); 
+            $table->unsignedBigInteger('id_tipo_usuario'); // Columna para clave foránea a `users`
             $table->string('correo')->unique(); // Correo electrónico (único)
+            $table->boolean('correo_verificado')->default(false); // Estado del usuario (activo o inactivo)
             $table->string('clave'); // Clave de acceso
             $table->string('token')->nullable(); // Token, puede ser nulo
-            $table->timestamp('fecha_registro')->useCurrent(); // Fecha de registro
-            $table->longText('img')->nullable(); // Imagen del usuario, puede ser nula
+            $table->longText('img')->default("sjdbkjsbdls"); // Imagen del usuario, puede ser nula
             $table->boolean('estado')->default(true); // Estado del usuario (activo o inactivo)
             $table->timestamps(); // Timestamps para created_at y updated_at
+
+
+            $table->foreign('id_tipo_usuario')
+                  ->references('id_tipo_usuario') // Apunta a `id_usuario` en la tabla `users`
+                  ->on('tipo_usuario') // En la tabla `users`
+                  ->onDelete('cascade'); 
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

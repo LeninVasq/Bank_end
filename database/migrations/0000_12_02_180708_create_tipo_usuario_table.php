@@ -15,17 +15,11 @@ class CreateTipoUsuarioTable extends Migration
     {
         Schema::create('tipo_usuario', function (Blueprint $table) {
             $table->id('id_tipo_usuario'); // ID de tipo de usuario como clave primaria
-            $table->unsignedBigInteger('id_usuario'); // Columna para clave foránea a `users`
             $table->string('tipo'); // Tipo de usuario
             $table->boolean('estado')->default(true); // Estado del tipo de usuario (activo o inactivo)
-            $table->timestamps(); // Timestamps para created_at y updated_at
+            $table->timestamps(); 
 
-            // Definir la clave foránea
-            $table->foreign('id_usuario')
-                  ->references('id_usuario') // Apunta a `id_usuario` en la tabla `users`
-                  ->on('users') // En la tabla `users`
-                  ->onDelete('cascade'); // Si se elimina un usuario, se elimina el tipo de usuario asociado
-        });
+          });
     }
 
     /**

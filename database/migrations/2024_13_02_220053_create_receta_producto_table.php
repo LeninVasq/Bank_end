@@ -17,7 +17,8 @@ class CreateRecetaProductoTable extends Migration
             $table->id('id_recetas_producto'); // Crea la columna id_recetas_producto como llave primaria
             $table->unsignedBigInteger('id_producto'); // Columna id_producto como FK
             $table->unsignedBigInteger('id_receta'); // Columna id_receta como FK
-            $table->boolean('estado'); // Columna estado (activo o inactivo)
+            $table->integer('cantidad'); // Columna tiempo_preparacion (en minutos o unidades de tiempo)
+            $table->boolean('estado')->default(true); // Columna estado (activo o inactivo)
             $table->timestamps(); // Crea las columnas created_at y updated_at
 
             // Definición de claves foráneas

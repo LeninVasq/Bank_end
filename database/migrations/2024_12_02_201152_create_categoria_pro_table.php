@@ -14,7 +14,7 @@ class CreateCategoriaProTable extends Migration
     public function up()
     {
         Schema::create('categoria_pro', function (Blueprint $table) {
-            $table->id('id_categoria'); // Columna id_categoria como clave primaria
+            $table->id('id_categoria_pro'); // Columna id_categoria como clave primaria
             $table->string('nombre_categoria'); // Nombre de la categoría
             $table->string('descripcion'); // Descripción de la categoría
             $table->boolean('estado')->default(true); // Estado de la categoría (activo o inactivo)

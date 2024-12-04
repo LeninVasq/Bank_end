@@ -9,8 +9,26 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+
+    /**
+     * @var string
+     */
+    protected $table = 'users';
+
+    /**
+     * The primary key associated with the table.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'id_usuario';
+
+    /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
+    public $timestamps = true;
 
     /**
      * The attributes that are mass assignable.
@@ -18,9 +36,13 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'id_tipo_usuario',
+        'correo',
+        'correo_verificado',
+        'clave',
+        'token',
+        'img',
+        'estado'
     ];
 
     /**
@@ -29,20 +51,21 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
-        'remember_token',
+        'clave',
+        'token'
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
      * @return array<string, string>
      */
-    protected function casts(): array
+    protected $casts = [
+        'estado' => 'boolean'
+    ];
+
+    public function tipo_usuario()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->belongsTo(tipo_usuario::class, 'id_tipo_usuario');
     }
 }

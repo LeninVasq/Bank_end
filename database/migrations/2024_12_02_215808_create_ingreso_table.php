@@ -16,16 +16,18 @@ class CreateIngresoTable extends Migration
         Schema::create('ingreso', function (Blueprint $table) {
             $table->id('id_ingreso'); // Crea la columna id_ingreso como llave primaria
             $table->unsignedBigInteger('id_producto'); // Columna id_producto como FK
+            $table->unsignedBigInteger('id_unidad_medida'); // Columna id_unidad_medida como FK
             $table->string('tipo_movimiento'); // Columna tipo_movimiento
-            $table->integer('cantidad'); // Columna cantidad
+            $table->float('costo_unitario'); // Columna cantidad
+            $table->float('costo_total'); // Columna cantidad
+            $table->integer('cantidad');  // Columna cantidad
             $table->string('motivo'); // Columna motivo
-            $table->dateTime('fecha_movimiento'); // Columna fecha_movimiento
-            $table->dateTime('fecha_vencimiento'); // Columna fecha_vencimiento
             $table->unsignedBigInteger('id_usuario'); // Columna id_usuario como FK
-            $table->boolean('estado'); // Columna estado
+            $table->boolean('estado')->default(true); // Columna estado
             $table->timestamps(); // Crea las columnas created_at y updated_at
 
             // Definición de claves foráneas
+            $table->foreign('id_unidad_medida')->references('id_unidad_medida')->on('unidad_medida')->onDelete('cascade');
             $table->foreign('id_producto')->references('id_producto')->on('productos')->onDelete('cascade');
             $table->foreign('id_usuario')->references('id_usuario')->on('users')->onDelete('cascade');
         });
