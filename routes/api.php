@@ -15,6 +15,11 @@ use App\Models\categorias_pro;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+
+//registro
+Route::post('/user/registro', [usuario_controller::class, 'registro']);
+
+
 //crud de tipos de usuarios
 Route::apiResource('tipo_usuario', tipo_usuario_controller::class);
 

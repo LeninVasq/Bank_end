@@ -11,6 +11,58 @@ use Illuminate\Validation\Rule;
 
 class usuario_controller extends Controller
 {
+
+   
+
+
+    //registro
+    public function registro(Request $request)
+    {
+        $user = User::email();
+        $validation = Validator::make($request->all(), [
+            'id_tipo_usuario' => 'required|exists:tipo_usuario,id_tipo_usuario',
+            'correo' => 'required|email|unique:users,correo',
+            'clave' => 'required|min:8',
+            'token' => 'sometimes|string',
+            //'img' => 'sometimes|string',
+            //'correo_verificado' => 'sometimes|string',
+            //'estado' => 'sometimes'
+        ]);
+
+        if ($validation->fails()) {
+            $data = [
+                'message' => 'Error en la validación de datos',
+                'error' => $validation->errors(),
+                'status' => 400
+            ];
+            return response()->json($data, 400);
+        }
+
+        $user = new User();
+
+        if ($request->has('id_tipo_usuario')) {
+            $user->id_tipo_usuario = $request->id_tipo_usuario;
+        }
+        if ($request->has('correo')) {
+            $user->correo = $request->correo;
+        }
+        if ($request->has('clave')) {
+            $user->clave = $request->clave;
+        }
+        if ($request->has('token')) {
+            $user->token = $request->token;
+        }
+
+        $user->save();
+
+        $data = [
+            'message' => 'Se ha registrado exitosamente',
+            'status' => 200
+        ];
+        return response()->json($data, 200);
+    }
+
+
     //actualiza todos los campos y parcialmete
     public function update(Request $request, $id)
     {
@@ -25,14 +77,14 @@ class usuario_controller extends Controller
         }
 
 
-        
+
 
         $validation =  Validator::make($request->all(), [
             'id_tipo_usuario' => 'sometimes|exists:tipo_usuario,id_tipo_usuario',
             'correo' => [
                 'sometimes',
                 'email',
-                Rule::unique('users')->ignore($user->id_usuario, 'id_usuario'), 
+                Rule::unique('users')->ignore($user->id_usuario, 'id_usuario'),
             ],
             'clave' => 'sometimes|min:8',
             'token' => 'sometimes',
@@ -53,25 +105,25 @@ class usuario_controller extends Controller
         }
 
         if ($request->has('id_tipo_usuario')) {
-        $user->id_tipo_usuario = $request->id_tipo_usuario; 
+            $user->id_tipo_usuario = $request->id_tipo_usuario;
         }
         if ($request->has('correo')) {
-        $user->correo = $request->correo; 
+            $user->correo = $request->correo;
         }
         if ($request->has('clave')) {
-        $user->clave = $request->clave; 
+            $user->clave = $request->clave;
         }
         if ($request->has('token')) {
-        $user->token = $request->token; 
+            $user->token = $request->token;
         }
         if ($request->has('img')) {
-        $user->img = $request->img;
+            $user->img = $request->img;
         }
         if ($request->has('correo_verificado')) {
-        $user->correo_verificado = $request->correo_verificado;
+            $user->correo_verificado = $request->correo_verificado;
         }
         if ($request->has('estado')) {
-        $user->estado = $request->estado;
+            $user->estado = $request->estado;
         }
 
         $user->save();
@@ -106,7 +158,6 @@ class usuario_controller extends Controller
         return response()->json($data, 200);
     }
 
-
     //consulta por id
     public function show($id)
     {
@@ -127,7 +178,6 @@ class usuario_controller extends Controller
         ];
         return response()->json($data, 200);
     }
-
 
     //insercion de usuarios
     public function store(Request $request)
@@ -185,7 +235,6 @@ class usuario_controller extends Controller
         ];
         return response()->json($data, 201);
     }
-
 
     //lista todos los usuarios
     public function index()

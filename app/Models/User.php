@@ -64,6 +64,13 @@ class User extends Authenticatable
         'estado' => 'boolean'
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'clave' => 'hashed',
+        ];
+    }
+
     public function tipo_usuario()
     {
         return $this->belongsTo(tipo_usuario::class, 'id_tipo_usuario');
