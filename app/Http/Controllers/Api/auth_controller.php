@@ -101,6 +101,7 @@ class auth_controller extends Controller
     
             $data = [
                 'id'=> $user->id_usuario,
+                'tipo_usuario'=> $user->id_tipo_usuario,
                 'message' => 'Se ha logeado exitosamente',
                 'token' => $token,
                 'status' => 200

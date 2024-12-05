@@ -23,9 +23,6 @@ Route::post('login', [auth_controller::class, 'login']);
 
 
 
-//busqueda por token
-Route::get('userProfile', [auth_controller::class, 'userProfile']);
-
 //logout
 Route::get('logout/{id}', [auth_controller::class, 'logout']);
 
