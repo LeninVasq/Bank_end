@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -59,7 +61,8 @@ class auth_controller extends Controller
         return response()->json($data, 200); 
     }
 
-    public function login(Request $request){
+    public function login(Request $request)
+    {
 
         
         $validation = Validator::make($request->all(), [
@@ -88,15 +91,22 @@ class auth_controller extends Controller
             $user = Auth::user();
             $token = $user->createToken("token")->plainTextToken;
             $cookie = cookie("cookie_token",$token, 60*24);
-
+           
+            $email = $request->input('correo');
+        
+            $users = User::where('correo', $email)->first();
+           
+            $users->token = $token;
+            $users->save();    
+    
             $data = [
+                'id'=> $user->id_usuario,
                 'message' => 'Se ha logeado exitosamente',
                 'token' => $token,
-                'cookie' => $cookie,
                 'status' => 200
             ];
 
-            return response()->json($data, 200); 
+            return response()->json($data, 200)->cookie($cookie); 
         }
 
         $data = [
@@ -106,12 +116,18 @@ class auth_controller extends Controller
         return response()->json($data, 401); 
     }
 
-    public function userProfile(Request $request){
-        
-    }
-
-    public function logout (){
-        
+    
+    
+    public function logout ($id){
+        $user = User::find($id);
+        $user->token = "";
+        $user->save();
+        $cookie = Cookie::forget('cookie_token');
+        $data = [
+            'message' => 'Cerrando session',
+            'status' => 200
+        ];
+        return response()->json($data, 200)->withCookie($cookie); 
     }
 
 

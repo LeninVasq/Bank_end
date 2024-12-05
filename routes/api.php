@@ -22,6 +22,13 @@ Route::post('registro', [auth_controller::class, 'register']);
 Route::post('login', [auth_controller::class, 'login']);
 
 
+
+//busqueda por token
+Route::get('userProfile', [auth_controller::class, 'userProfile']);
+
+//logout
+Route::get('logout/{id}', [auth_controller::class, 'logout']);
+
 //crud de tipos de usuarios
 Route::apiResource('tipo_usuario', tipo_usuario_controller::class);
 
