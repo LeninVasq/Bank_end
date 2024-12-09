@@ -41,6 +41,7 @@ class productos extends Model
         'id_unidad_medida',
         'id_usuario',
         'id_categoria_pro',
+        'stock',
         'foto',
         'estado'
     ];

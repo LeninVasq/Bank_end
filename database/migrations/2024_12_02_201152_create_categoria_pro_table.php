@@ -17,6 +17,7 @@ class CreateCategoriaProTable extends Migration
             $table->id('id_categoria_pro'); // Columna id_categoria como clave primaria
             $table->string('nombre_categoria'); // Nombre de la categoría
             $table->string('descripcion'); // Descripción de la categoría
+            $table->longText('foto'); // Columna foto de tipo longtext
             $table->boolean('estado')->default(true); // Estado de la categoría (activo o inactivo)
             $table->timestamps(); // Timestamps para created_at y updated_at
         });

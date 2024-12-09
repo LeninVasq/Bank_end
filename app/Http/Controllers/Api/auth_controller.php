@@ -29,7 +29,7 @@ class auth_controller extends Controller
         if ($validation->fails()) {
             $data = [
                 'message' => 'Error en la validación de datos',
-                'error' => $validation->errors(),
+                'details' => $validation->errors(),
                 'status' => 400
             ];
             return response()->json($data, 400);
@@ -67,18 +67,19 @@ class auth_controller extends Controller
         
         $validation = Validator::make($request->all(), [
             'correo' => 'required|email',
-            'clave' => 'required|min:8',
+           // 'clave' => 'required|min:8',
         ]);
 
         if ($validation->fails()) {
             $data = [
-                'message' => 'Error en la validación de datos',
-                'error' => $validation->errors(),
+                //'error' => 'Error en la validación de datos',
+                'details' => $validation->errors(),
                 'status' => 400
             ];
             return response()->json($data, 400);
         }
-
+        
+        
 
         
         $credentials = [
@@ -111,10 +112,10 @@ class auth_controller extends Controller
         }
 
         $data = [
-            'message' => 'Las credenciales no son correctas',
+            'error' => 'Las credenciales no son correctas',
             'status' => 401
         ];
-        return response()->json($data, 401); 
+        return response()->json($data, 401);
     }
 
     

@@ -37,6 +37,7 @@ class categoria_pro extends Model
     protected $fillable = [
         'nombre_categoria',
         'descripcion',
+        'foto',
         'estado'
     ];
 

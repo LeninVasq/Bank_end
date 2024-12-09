@@ -35,6 +35,7 @@ class categoria_pro_controller extends Controller
             ],
 
              'descripcion' => 'sometimes|string',
+             'foto' => 'sometimes',
              'estado' => 'sometimes'
          ]);
  
@@ -55,6 +56,10 @@ class categoria_pro_controller extends Controller
          if ($request->has('descripcion')) {
          $categorias_pro->descripcion = $request->descripcion; 
          }
+
+         if ($request->has('foto')) {
+            $categorias_pro->foto = $request->foto; 
+            }
          if ($request->has('estado')) {
          $categorias_pro->estado = $request->estado; 
          }
@@ -121,6 +126,8 @@ class categoria_pro_controller extends Controller
          $validation =  Validator::make($request->all(), [
              'nombre_categoria' => 'required|string|unique:categoria_pro',
              'descripcion' => 'required|string',
+             'foto' => 'required'
+
          ]);
  
          if ($validation->fails()) {
@@ -138,7 +145,9 @@ class categoria_pro_controller extends Controller
          $categorias_pro  = categoria_pro::create([
            
              'nombre_categoria' => $request->nombre_categoria,
-             'descripcion' => $request->descripcion
+             'descripcion' => $request->descripcion,
+             'foto' => $request->foto
+
          ]);
  
          if (!$categorias_pro) {
@@ -173,7 +182,27 @@ class categoria_pro_controller extends Controller
              ];
          } else {
              $data = [
-                 'categoria_recetas' => $categorias_pro,
+                 'categorias_productos' => $categorias_pro,
+                 'status' => 200
+             ];
+         }
+         return response()->json($data, 200);
+     }
+
+
+     public function listasolo1()
+     {
+         $data = [];
+         $categorias_pro = categoria_pro::where('estado', 1)->get();
+ 
+         if ($categorias_pro->isEmpty()) {
+             $data = [
+                 'message' => 'No hay categorias de productos registrados',
+                 'status' => 200
+             ];
+         } else {
+             $data = [
+                 'categorias_productos' => $categorias_pro,
                  'status' => 200
              ];
          }

@@ -174,4 +174,25 @@ class unidad_medida_controller extends Controller
         }
         return response()->json($data, 200);
     }
+
+
+    public function listasolo1()
+     {
+        
+ 
+         $data = [];
+        $unidad_medida = unidad_medida::where('estado', 1)->get();
+        if ($unidad_medida->isEmpty()) {
+            $data = [
+                'message' => 'No hay unidades de medidas registrados',
+                'status' => 200
+            ];
+        } else {
+            $data = [
+                'unidad_medida' => $unidad_medida,
+                'status' => 200
+            ];
+        }
+        return response()->json($data, 200);
+     }
 }

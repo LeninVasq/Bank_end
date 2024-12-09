@@ -111,6 +111,7 @@ class productos_controller extends Controller
     public function show($id)
     {
         $productos = productos::find($id);
+        
         if (!$productos) {
             $data = [
                 'message' => 'El id del productos no existe',
@@ -218,21 +219,37 @@ class productos_controller extends Controller
 
     //lista todos los productos
     public function index()
-    {
-        $data = [];
-        $productos = productos::all();
+{
+    $productos = Productos::with(['unidadMedida', 'usuario', 'categoria'])->get();
 
-        if ($productos->isEmpty()) {
-            $data = [
-                'message' => 'No hay productos registrados',
-                'status' => 200
-            ];
-        } else {
-            $data = [
-                'productos' => $productos,
-                'status' => 200
-            ];
-        }
-        return response()->json($data, 200);
+    if ($productos->isEmpty()) {
+        return response()->json([
+            'message' => 'No hay productos registrados',
+            'status' => 200
+        ], 200);
     }
+
+    $productosFormateados = $productos->map(function ($producto) {
+        $productoArray = $producto->toArray();
+
+        $productoArray['unidad_medida'] = $producto->unidadMedida->nombre_unidad ?? 'No asignado';
+        $productoArray['usuario'] = $producto->usuario->correo ?? 'No asignado';
+        $productoArray['categoria'] = $producto->categoria->nombre_categoria ?? 'No asignado';
+
+        unset($productoArray['id_unidad_medida'], $productoArray['id_usuario'], $productoArray['id_categoria_pro']);
+
+        return $productoArray;
+    });
+
+    return response()->json([
+        'message' => 'Productos encontrados',
+        'status' => 200,
+        'productos' => $productosFormateados
+    ], 200);
+}
+
+
+
+
+    
 }

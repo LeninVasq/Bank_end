@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\recetas_controller;
 use App\Http\Controllers\Api\tipo_usuario_controller;
 use App\Http\Controllers\Api\unidad_medida_controller;
 use App\Http\Controllers\Api\usuario_controller;
+use App\Models\categoria_pro;
 use App\Models\categoria_recetas;
 use App\Models\categorias_pro;
 use Illuminate\Http\Request;
@@ -21,6 +22,10 @@ use Illuminate\Support\Facades\Route;
 Route::post('registro', [auth_controller::class, 'register']);
 Route::post('login', [auth_controller::class, 'login']);
 
+
+//lista solo si el estado esta activo(tiene que tener el valor de 1)
+Route::get('listasolo1', [categoria_pro_controller::class, 'listasolo1']);
+Route::get('listasolounidademedia1', [unidad_medida_controller::class, 'listasolo1']);
 
 
 //logout

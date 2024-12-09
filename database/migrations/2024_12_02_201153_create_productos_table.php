@@ -17,6 +17,7 @@ class CreateProductosTable extends Migration
             $table->id('id_producto'); // Crea la columna id_producto como llave primaria
             $table->string('nombre'); // Columna nombre
             $table->string('descripcion'); // Columna descripcion
+            $table->integer('stock')->default(0); // Columna descripcion
             $table->unsignedBigInteger('id_unidad_medida'); // Columna id_unidad_medida como FK
             $table->unsignedBigInteger('id_usuario'); // Columna id_usuario como FK
             $table->unsignedBigInteger('id_categoria_pro'); // Columna id_categoria como FK
