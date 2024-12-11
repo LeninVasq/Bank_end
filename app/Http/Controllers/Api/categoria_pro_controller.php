@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\categoria_pro;
 use App\Models\categorias_pro;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -173,8 +174,11 @@ class categoria_pro_controller extends Controller
      public function index()
      {
          $data = [];
-         $categorias_pro = categoria_pro::all();
- 
+
+
+         $categorias_pro = DB::table('categoria_count(productos)')->get();
+         
+          
          if ($categorias_pro->isEmpty()) {
              $data = [
                  'message' => 'No hay categorias de productos registrados',
