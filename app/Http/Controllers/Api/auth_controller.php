@@ -102,6 +102,7 @@ class auth_controller extends Controller
     
             $data = [
                 'id'=> $user->id_usuario,
+                'correo'=> $user->correo,
                 'tipo_usuario'=> $user->id_tipo_usuario,
                 'message' => 'Se ha logeado exitosamente',
                 'token' => $token,
@@ -110,7 +111,7 @@ class auth_controller extends Controller
 
             return response()->json($data, 200)->cookie($cookie); 
         }
-
+        
         $data = [
             'error' => 'Las credenciales no son correctas',
             'status' => 401
