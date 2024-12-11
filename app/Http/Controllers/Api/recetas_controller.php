@@ -185,14 +185,22 @@ class recetas_controller extends Controller
     }
 
     // Listar todas las recetas
-    public function index()
+    public function index(Request $request)
     {
         $data = [];
-        $recetas = recetas::all();
-
+        $categoriaId = $request->query('categoria_id'); // Obtener el parametro de categoria_id desde la URL
+        
+        if ($categoriaId) {
+            // Si se proporciona el categoria_id, filtramos las recetas por esa categoría
+            $recetas = recetas::where('id_categoria_recetas', $categoriaId)->get();
+        } else {
+            // Si no se proporciona un categoria_id, obtenemos todas las recetas
+            $recetas = recetas::all();
+        }
+    
         if ($recetas->isEmpty()) {
             $data = [
-                'message' => 'No hay recetas registrados',
+                'message' => 'No hay recetas registradas para esta categoría',
                 'status' => 200
             ];
         } else {
@@ -201,6 +209,9 @@ class recetas_controller extends Controller
                 'status' => 200
             ];
         }
+        
         return response()->json($data, 200);
     }
+    
+    
 }
