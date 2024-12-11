@@ -106,7 +106,8 @@ class auth_controller extends Controller
                 'tipo_usuario'=> $user->id_tipo_usuario,
                 'message' => 'Se ha logeado exitosamente',
                 'token' => $token,
-                'status' => 200
+                'status' => 200,
+                'estado' => $user->estado
             ];
 
             return response()->json($data, 200)->cookie($cookie); 
