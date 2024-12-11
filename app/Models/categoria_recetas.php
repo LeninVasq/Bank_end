@@ -13,34 +13,36 @@ class categoria_recetas extends Model
     /**
      * @var string
      */
-    protected $table = 'categoria_recetas';
+    protected $table = 'categoria_recetas'; 
     /**
      * The primary key associated with the table.
      *
      * @var string
      */
-    protected $primaryKey = 'id_categoria_recetas';
+    protected $primaryKey = 'id_categoria_recetas'; 
 
     /**
      * Indicates if the model should be timestamped.
      *
      * @var bool
      */
-    public $timestamps = true;
+    public $timestamps = true; 
 
 
-     /**
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'nombre',
-        'descripcion',
+        'nombre', 
+        'descripcion', 
+        'foto',  
         'estado'
     ];
 
     protected $casts = [
-        'estado' => 'boolean'
+        'estado' => 'boolean', 
     ];
+
 }

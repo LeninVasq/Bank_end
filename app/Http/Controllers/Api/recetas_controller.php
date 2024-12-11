@@ -1,29 +1,76 @@
 <?php
-
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\categoria_recetas;
 use App\Models\recetas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class recetas_controller extends Controller
 {
-    //actualiza todos los campos y parcialmete
+    // Inserción de receta
+    public function store(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'id_usuario' => 'required|exists:users,id_usuario',
+            'id_categoria_recetas' => 'required|exists:categoria_recetas,id_categoria_recetas',
+            'nombre_receta' => 'required|string|unique:recetas',
+            'descripcion' => 'required|string',
+            'tiempo_preparacion' => 'required|integer',
+            'numero_porciones' => 'required|integer',
+            'dificultad' => 'required|string',
+            'foto' => 'required', 
+        ]);
+
+        if ($validation->fails()) {
+            $data = [
+                'message' => 'Error en la validacion de datos',
+                'error' => $validation->errors(),
+                'status' => 400
+            ];
+            return response()->json($data, 400);
+        }
+
+        $recetas = recetas::create([
+            'id_usuario' => $request->id_usuario,
+            'id_categoria_recetas' => $request->id_categoria_recetas,
+            'nombre_receta' => $request->nombre_receta,
+            'descripcion' => $request->descripcion,
+            'tiempo_preparacion' => $request->tiempo_preparacion,
+            'numero_porciones' => $request->numero_porciones,
+            'dificultad' => $request->dificultad,
+            'foto' => $request->foto
+        ]);
+
+        if (!$recetas) {
+            $data = [
+                'message' => 'Error al crear la receta',
+                'status' => 500
+            ];
+            return response()->json($data, 500);
+        }
+
+        $data = [
+            'message' => 'Receta creada',
+            'status' => 201
+        ];
+        return response()->json($data, 201);
+    }
+
+    // Actualización de receta
     public function update(Request $request, $id)
     {
         $recetas = recetas::find($id);
         if (!$recetas) {
             $data = [
-                'message' => 'El id del producto no existe',
+                'message' => 'El id de la receta no existe',
                 'status' => 404
-
             ];
             return response()->json($data, 404);
         }
 
-        $validation =  Validator::make($request->all(), [
+        $validation = Validator::make($request->all(), [
             'id_usuario' => 'sometimes|exists:users,id_usuario',
             'id_categoria_recetas' => 'sometimes|exists:categoria_recetas,id_categoria_recetas',
             'nombre_receta' => 'sometimes|string|unique:recetas',
@@ -31,13 +78,11 @@ class recetas_controller extends Controller
             'tiempo_preparacion' => 'sometimes|integer',
             'numero_porciones' => 'sometimes|integer',
             'dificultad' => 'sometimes|string',
-            'foto' => 'sometimes|string',
+            'foto' => 'sometimes', // Foto opcional
             'estado' => 'sometimes'
         ]);
 
-
         if ($validation->fails()) {
-
             $data = [
                 'message' => 'Error en la validacion de datos',
                 'error' => $validation->errors(),
@@ -66,32 +111,46 @@ class recetas_controller extends Controller
         }
         if ($request->has('dificultad')) {
             $recetas->dificultad = $request->dificultad;
-        } 
-        if ($request->has('foto')) {
-            $recetas->foto = $request->foto;
         }
+
+        if ($request->has('foto')) {
+            // Verificamos si la imagen está en formato Base64
+            if (strpos($request->foto, 'data:image') === 0) {
+                // Obtenemos la extensión de la imagen
+                $extension = explode('/', explode(':', substr($request->foto, 0, strpos($request->foto, ';')))[1])[1];
+                // Generamos un nombre único para la imagen
+                $filename = 'receta_' . time() . '.' . $extension;
+                // Decodificamos la cadena Base64
+                $image = base64_decode(preg_replace('/^data:image\/\w+;base64,/', '', $request->foto));
+                // Guardamos la imagen en el directorio público
+                $path = public_path('storage/recetas/' . $filename);
+                file_put_contents($path, $image);
+                $recetas->foto = 'storage/recetas/' . $filename; // Actualizamos la foto
+            }
+        }
+
         if ($request->has('estado')) {
             $recetas->estado = $request->estado;
         }
 
         $recetas->save();
-        $data = [
-            'message' => 'receta actualizada',
-            'status' => 200
 
+        $data = [
+            'message' => 'Receta actualizada',
+            'status' => 200
         ];
         return response()->json($data, 200);
     }
 
-    //elimina por id
+    // Eliminar receta por ID
     public function destroy($id)
     {
         $recetas = recetas::find($id);
+
         if (!$recetas) {
             $data = [
-                'message' => 'La recetas no existe',
+                'message' => 'El id de la receta no existe',
                 'status' => 404
-
             ];
             return response()->json($data, 404);
         }
@@ -99,23 +158,21 @@ class recetas_controller extends Controller
         $recetas->delete();
 
         $data = [
-            'message' => "producto eliminado",
+            'message' => "Se ha eliminado el registro de receta",
             'status' => 200
-
         ];
         return response()->json($data, 200);
     }
 
-
-    //consulta por id
+    // Consultar receta por ID
     public function show($id)
     {
         $recetas = recetas::find($id);
+
         if (!$recetas) {
             $data = [
                 'message' => 'El id de la receta no existe',
                 'status' => 404
-
             ];
             return response()->json($data, 404);
         }
@@ -123,93 +180,27 @@ class recetas_controller extends Controller
         $data = [
             'message' => $recetas,
             'status' => 200
-
         ];
         return response()->json($data, 200);
     }
 
-
-    //insercion de productos
-    public function store(Request $request)
-    {
-
-        $data = [];
-        $categoria_recetas = categoria_recetas::all();
-
-        if ($categoria_recetas->isEmpty()) {
-            $data = [
-                'mensaje' => 'No hay categorias de recetas registrados',
-                'status' => 200
-            ];
-            return response()->json($data, 200);
-        }
-
-        $validation =  Validator::make($request->all(), [
-            'id_usuario' => 'required|exists:users,id_usuario',
-            'id_categoria_recetas' => 'required|exists:categoria_recetas,id_categoria_recetas',
-            'nombre_receta' => 'required|string|unique:recetas',
-            'descripcion' => 'required|string',
-            'tiempo_preparacion' => 'required|integer',
-            'numero_porciones' => 'required|integer',
-            'dificultad' => 'required|string',
-            'foto' => 'required|string',
-
-        ]);
-
-        if ($validation->fails()) {
-
-            $data = [
-                'message' => 'Error en la validacion de datos',
-                'error' => $validation->errors(),
-                'status' => 400
-
-            ];
-            return response()->json($data, 400);
-        }
-
-
-        $data = [
-            'id_usuario' => $request->id_usuario,
-            'id_categoria_recetas' => $request->id_categoria_recetas,
-            'nombre_receta' => $request->nombre_receta,
-            'descripcion' => $request->descripcion,
-            'tiempo_preparacion' => $request->tiempo_preparacion,
-            'numero_porciones' => $request->numero_porciones,
-            'dificultad' => $request->dificultad,
-            'foto' => $request->foto,
-        ];
-
-        $recetas = recetas::create($data);
-
-
-        if (!$recetas) {
-            $data = [
-                'message' => 'Error al crear la recetas',
-                'status' => 500
-
-            ];
-            return response()->json($data, 500);
-        }
-
-
-        $data = [
-            'message' => $recetas,
-            'status' => 201
-
-        ];
-        return response()->json($data, 201);
-    }
-
-
-    //lista todos las recetas
-    public function index()
+    // Listar todas las recetas
+    public function index(Request $request)
     {
         $data = [];
-        $recetas = recetas::all();
-
+        $categoriaId = $request->query('categoria_id'); // Obtener el parametro de categoria_id desde la URL
+        
+        if ($categoriaId) {
+            // Si se proporciona el categoria_id, filtramos las recetas por esa categoría
+            $recetas = recetas::where('id_categoria_recetas', $categoriaId)->get();
+        } else {
+            // Si no se proporciona un categoria_id, obtenemos todas las recetas
+            $recetas = recetas::all();
+        }
+    
         if ($recetas->isEmpty()) {
             $data = [
-                'message' => 'No hay recetas registradas',
+                'message' => 'No hay recetas registradas para esta categoría',
                 'status' => 200
             ];
         } else {
@@ -218,6 +209,9 @@ class recetas_controller extends Controller
                 'status' => 200
             ];
         }
+        
         return response()->json($data, 200);
     }
+    
+    
 }

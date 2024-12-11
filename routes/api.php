@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\unidad_medida_controller;
 use App\Http\Controllers\Api\usuario_controller;
 use App\Models\categoria_pro;
 use App\Models\categoria_recetas;
+ use App\Http\Controllers\Api\paso_receta_controller; 
 use App\Models\categorias_pro;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -59,3 +60,6 @@ Route::apiResource('recetas', recetas_controller::class);
 
 //crud de receta_producto
 Route::apiResource('receta_producto', receta_producto_controller::class);
+
+// CRUD de pasos de receta
+Route::apiResource('pasos_receta', paso_receta_controller::class);

@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,11 +13,12 @@ class CreateCategoriaRecetasTable extends Migration
     public function up()
     {
         Schema::create('categoria_recetas', function (Blueprint $table) {
-            $table->id('id_categoria_recetas'); // Crea la columna id_categoria_recetas como llave primaria
-            $table->string('nombre'); // Columna nombre de la categoría
-            $table->string('descripcion'); // Columna descripcion
-            $table->boolean('estado')->default(true); // Columna estado (activo o inactivo)
-            $table->timestamps(); // Crea las columnas created_at y updated_at
+            $table->id('id_categoria_recetas');  // Definir la columna id como clave primaria
+            $table->string('nombre');            // Nombre de la categoría
+            $table->string('descripcion');       // Descripción de la categoría
+            $table->longText('foto')->nullable(); // Foto de la categoría (base64 o URL, puede ser nulo)
+            $table->boolean('estado')->default(true); // Estado de la categoría (activo por defecto)
+            $table->timestamps();  // Timestamps para created_at y updated_at
         });
     }
 
