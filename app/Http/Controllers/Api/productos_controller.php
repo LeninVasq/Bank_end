@@ -31,7 +31,7 @@ class productos_controller extends Controller
             'nombre' => [
                 'sometimes',
                 'string',
-                Rule::unique('productos')->ignore($productos->id_producto, 'id_producto'), 
+                Rule::unique('productos')->ignore($productos->id_producto, 'id_producto'),
             ],
             'descripcion' => 'sometimes|string',
             'id_unidad_medida' => 'sometimes|exists:unidad_medida,id_unidad_medida',
@@ -41,7 +41,7 @@ class productos_controller extends Controller
             'estado' => 'sometimes',
         ]);
 
-        
+
         if ($validation->fails()) {
 
             $data = [
@@ -53,22 +53,22 @@ class productos_controller extends Controller
         }
 
         if ($request->has('nombre')) {
-        $productos->nombre = $request->nombre; 
+            $productos->nombre = $request->nombre;
         }
         if ($request->has('descripcion')) {
-        $productos->descripcion = $request->descripcion; 
+            $productos->descripcion = $request->descripcion;
         }
         if ($request->has('id_unidad_medida')) {
-        $productos->id_unidad_medida = $request->id_unidad_medida; 
+            $productos->id_unidad_medida = $request->id_unidad_medida;
         }
         if ($request->has('id_usuario')) {
-        $productos->id_usuario = $request->id_usuario; 
+            $productos->id_usuario = $request->id_usuario;
         }
         if ($request->has('id_categoria_pro')) {
-        $productos->id_categoria_pro = $request->id_categoria_pro;
+            $productos->id_categoria_pro = $request->id_categoria_pro;
         }
         if ($request->has('foto')) {
-        $productos->foto = $request->foto;
+            $productos->foto = $request->foto;
         }
         if ($request->has('estado')) {
             $productos->estado = $request->estado;
@@ -111,7 +111,7 @@ class productos_controller extends Controller
     public function show($id)
     {
         $productos = productos::find($id);
-        
+
         if (!$productos) {
             $data = [
                 'message' => 'El id del productos no existe',
@@ -158,14 +158,13 @@ class productos_controller extends Controller
 
 
         $categorias_pro = categoria_pro::all();
- 
+
         if ($categorias_pro->isEmpty()) {
             $data = [
                 'message' => 'No hay categorias de productos registrados',
                 'status' => 200
             ];
             return response()->json($data, 200);
-
         }
 
         $validation =  FacadesValidator::make($request->all(), [
@@ -217,39 +216,68 @@ class productos_controller extends Controller
     }
 
 
-    //lista todos los productos
-    public function index()
-{
-    $productos = Productos::with(['unidadMedida', 'usuario', 'categoria'])->get();
 
-    if ($productos->isEmpty()) {
+
+    public function productocateg($id)
+    {
+        $productos = Productos::with(['unidadMedida', 'usuario', 'categoria'])
+        ->where('id_categoria_pro', $id) // Suponiendo que 'categoria_id' es el nombre de la columna que almacena el ID de la categoría
+        ->get();
+    
+        if ($productos->isEmpty()) {
+            return response()->json([
+                'message' => 'No hay productos registrados',
+                'status' => 200
+            ], 200);
+        }
+
+        $productosFormateados = $productos->map(function ($producto) {
+            $productoArray = $producto->toArray();
+
+            $productoArray['unidad_medida'] = $producto->unidadMedida->nombre_unidad ?? 'No asignado';
+            $productoArray['usuario'] = $producto->usuario->correo ?? 'No asignado';
+            $productoArray['categoria'] = $producto->categoria->nombre_categoria ?? 'No asignado';
+
+            unset($productoArray['id_unidad_medida'], $productoArray['id_usuario'], $productoArray['id_categoria_pro']);
+
+            return $productoArray;
+        });
+
         return response()->json([
-            'message' => 'No hay productos registrados',
-            'status' => 200
+            'message' => 'Productos encontrados',
+            'status' => 200,
+            'productos' => $productosFormateados
         ], 200);
     }
 
-    $productosFormateados = $productos->map(function ($producto) {
-        $productoArray = $producto->toArray();
+    //lista todos los productos
+    public function index()
+    {
+        $productos = Productos::with(['unidadMedida', 'usuario', 'categoria'])->get();
 
-        $productoArray['unidad_medida'] = $producto->unidadMedida->nombre_unidad ?? 'No asignado';
-        $productoArray['usuario'] = $producto->usuario->correo ?? 'No asignado';
-        $productoArray['categoria'] = $producto->categoria->nombre_categoria ?? 'No asignado';
+        if ($productos->isEmpty()) {
+            return response()->json([
+                'message' => 'No hay productos registrados',
+                'status' => 200
+            ], 200);
+        }
 
-        unset($productoArray['id_unidad_medida'], $productoArray['id_usuario'], $productoArray['id_categoria_pro']);
+        $productosFormateados = $productos->map(function ($producto) {
+            $productoArray = $producto->toArray();
 
-        return $productoArray;
-    });
+            $productoArray['unidad_medida'] = $producto->unidadMedida->nombre_unidad ?? 'No asignado';
+            $productoArray['usuario'] = $producto->usuario->correo ?? 'No asignado';
+            $productoArray['categoria'] = $producto->categoria->nombre_categoria ?? 'No asignado';
 
-    return response()->json([
-        'message' => 'Productos encontrados',
-        'status' => 200,
-        'productos' => $productosFormateados
-    ], 200);
-}
+            unset($productoArray['id_unidad_medida'], $productoArray['id_usuario'], $productoArray['id_categoria_pro']);
 
+            return $productoArray;
+        });
 
-
-
-    
+        return response()->json([
+            'message' => 'Productos encontrados',
+            'status' => 200,
+            'productos' => $productosFormateados
+        ], 200);
+    }
 }
