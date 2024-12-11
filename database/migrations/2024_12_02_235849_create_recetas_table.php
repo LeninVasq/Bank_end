@@ -22,7 +22,7 @@ class CreateRecetasTable extends Migration
             $table->integer('tiempo_preparacion'); // Columna tiempo_preparacion (en minutos o unidades de tiempo)
             $table->integer('numero_porciones'); // Columna numero_porciones
             $table->string('dificultad'); // Columna dificultad (por ejemplo, "Fácil", "Media", "Difícil")
-            $table->string('foto'); // Columna foto
+            $table->longText('foto')->nullable();
             $table->boolean('estado')->default(true); // Columna estado (activo o inactivo)
             $table->timestamps(); // Crea las columnas created_at y updated_at
 
