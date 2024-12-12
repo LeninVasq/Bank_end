@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateProductosTable extends Migration
@@ -13,6 +14,9 @@ class CreateProductosTable extends Migration
      */
     public function up()
     {
+
+        
+
         Schema::create('productos', function (Blueprint $table) {
             $table->id('id_producto'); // Crea la columna id_producto como llave primaria
             $table->string('nombre'); // Columna nombre
@@ -30,6 +34,15 @@ class CreateProductosTable extends Migration
             $table->foreign('id_usuario')->references('id_usuario')->on('users')->onDelete('cascade');
             $table->foreign('id_categoria_pro')->references('id_categoria_pro')->on('categoria_pro')->onDelete('cascade');
         });
+
+        DB::statement("
+            CREATE VIEW categoria_count_productos AS
+            SELECT c.*, COUNT(p.id_categoria_pro) AS cantidad_productos
+            FROM categoria_pro c
+            LEFT JOIN productos p ON c.id_categoria_pro = p.id_categoria_pro
+            GROUP BY c.id_categoria_pro, c.nombre_categoria, c.descripcion, c.estado, c.created_at, c.updated_at, c.foto
+            ORDER BY cantidad_productos DESC
+        ");
     }
 
     /**
@@ -39,6 +52,8 @@ class CreateProductosTable extends Migration
      */
     public function down()
     {
+        DB::statement("DROP VIEW IF EXISTS categoria_count_productos");
+
         Schema::dropIfExists('productos');
     }
 }

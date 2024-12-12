@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateCategoriaProTable extends Migration
@@ -13,6 +14,8 @@ class CreateCategoriaProTable extends Migration
      */
     public function up()
     {
+        
+
         Schema::create('categoria_pro', function (Blueprint $table) {
             $table->id('id_categoria_pro'); // Columna id_categoria como clave primaria
             $table->string('nombre_categoria'); // Nombre de la categoría
@@ -30,6 +33,7 @@ class CreateCategoriaProTable extends Migration
      */
     public function down()
     {
+
         Schema::dropIfExists('categoria_pro');
     }
 }

@@ -176,7 +176,7 @@ class categoria_pro_controller extends Controller
          $data = [];
 
 
-         $categorias_pro = DB::table('categoria_count(productos)')->get();
+         $categorias_pro = DB::table('categoria_count_productos')->get();
          
           
          if ($categorias_pro->isEmpty()) {
