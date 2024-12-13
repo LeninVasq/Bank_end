@@ -69,4 +69,8 @@ class recetas extends Model
     {
         return $this->belongsTo(categoria_recetas::class, 'id_categoria_recetas', 'id_categoria_recetas');
     }
+    public function recetaProductos()
+    {
+        return $this->hasMany(receta_producto::class, 'id_receta', 'id_recetas');
+    }
 }

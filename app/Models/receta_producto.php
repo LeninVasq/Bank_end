@@ -41,4 +41,5 @@ class receta_producto extends Model
     protected $casts = [
         'estado' => 'boolean',
     ];
+    
 }
