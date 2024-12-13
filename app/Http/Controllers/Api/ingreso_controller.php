@@ -27,7 +27,6 @@ class ingreso_controller extends Controller
 
         $validation =  Validator::make($request->all(), [
             'id_producto' => 'sometimes|exists:productos,id_producto',
-            'id_unidad_medida' => 'sometimes|exists:unidad_medida,id_unidad_medida',
             'tipo_movimiento' => 'sometimes|string',
             'costo_unitario' => 'sometimes|numeric',
             'costo_total' => 'sometimes|numeric',
@@ -51,9 +50,7 @@ class ingreso_controller extends Controller
         if ($request->has('id_producto')) {
             $ingreso->id_producto = $request->id_producto;
         }
-        if ($request->has('id_unidad_medida')) {
-            $ingreso->id_unidad_medida = $request->id_unidad_medida;
-        }
+
         if ($request->has('tipo_movimiento')) {
             $ingreso->tipo_movimiento = $request->tipo_movimiento;
         }
@@ -68,15 +65,15 @@ class ingreso_controller extends Controller
         }
         if ($request->has('motivo')) {
             $ingreso->motivo = $request->motivo;
-        } 
+        }
         if ($request->has('id_usuario')) {
             $ingreso->id_usuario = $request->id_usuario;
         }
         if ($request->has('estado')) {
             $ingreso->estado = $request->estado;
         }
-        
-       
+
+
 
         $ingreso->save();
         $data = [
@@ -149,17 +146,6 @@ class ingreso_controller extends Controller
         }
 
 
-        $data = [];
-        $unidad_medida = unidad_medida::all();
-
-        if ($unidad_medida->isEmpty()) {
-            $data = [
-                'mensaje' => 'No hay unidades de medidas registrados',
-                'status' => 200
-            ];
-            return response()->json($data, 200);
-        }
-
         $User = User::all();
 
         if ($User->isEmpty()) {
@@ -173,13 +159,12 @@ class ingreso_controller extends Controller
 
         $validation =  Validator::make($request->all(), [
             'id_producto' => 'required|exists:productos,id_producto',
-            'id_unidad_medida' => 'required|exists:unidad_medida,id_unidad_medida',
+            'id_usuario' => 'required|exists:users,id_usuario',
             'tipo_movimiento' => 'required|string',
             'costo_unitario' => 'required|numeric',
             'costo_total' => 'sometimes|numeric',
             'cantidad' => 'required|integer',
             'motivo' => 'sometimes|string',
-            'id_usuario' => 'required|exists:users,id_usuario',
 
         ]);
 
@@ -187,7 +172,7 @@ class ingreso_controller extends Controller
 
             $data = [
                 'message' => 'Error en la validacion de datos',
-                'error' => $validation->errors(),
+                    'error' => $validation->errors(),
                 'status' => 400
 
             ];
@@ -195,25 +180,47 @@ class ingreso_controller extends Controller
         }
 
 
-        $data = [
-            'id_producto' => $request->id_producto,
-            'id_unidad_medida' => $request->id_unidad_medida,
-            'tipo_movimiento' => $request->tipo_movimiento,
-            'costo_unitario' => $request->costo_unitario,
-            'cantidad' => $request->cantidad,
-            'id_usuario' => $request->id_usuario,
-        ];
-
-        if ($request->has('costo_total')) {
-            $data['costo_total'] = $request->costo_total;
-        }
+      
 
         if ($request->has('motivo')) {
-            $data['motivo'] = $request->motivo;
+           $motivo = $request->motivo;
+        }
+        else{
+            $motivo= "Ninguno";
         }
 
-        $ingreso = ingreso::create($data);
+        // Insertar el ingreso usando Eloquent
+        $ingreso = Ingreso::create([
+            'id_producto'     => $request->id_producto,
+            'tipo_movimiento' =>  $request->tipo_movimiento, 
+            'costo_unitario'  => $request->costo_unitario,
+            'cantidad'        => $request->cantidad,
+            'id_usuario'      => $request->id_usuario,
+            'costo_total'     => $request->costo_unitario * $request->cantidad,
+            'motivo'          => $motivo,
+        ]);
 
+        $producto = productos::find($ingreso->id_producto);
+        $stockActual = $producto->stock;
+
+        if($request->tipo_movimiento == "Entrada"){
+        $nuevoStock = $stockActual + $ingreso->cantidad;
+        }
+        elseif ($request->tipo_movimiento == "Salida") {
+            if($ingreso->cantidad > $stockActual){
+                $data = [
+                    'message' => 'La cantidad de productos a retirar excede la cantidad del stock',
+                    'status' => 400
+    
+                ];
+                return response()->json($data, 400);
+            }
+            $nuevoStock = $stockActual - $ingreso->cantidad;
+        }
+
+
+
+        $producto->update(['stock' => $nuevoStock]);
 
         if (!$ingreso) {
             $data = [
