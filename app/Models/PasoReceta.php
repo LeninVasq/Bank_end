@@ -46,6 +46,6 @@ class PasoReceta extends Model
      */
     public function receta()
     {
-        return $this->belongsTo(Receta::class, 'id_recetas');
+        return $this->belongsTo(Recetas::class, 'id_recetas'); // Cambié "recetas" por "Recetas"
     }
 }

@@ -65,3 +65,5 @@ Route::get('receta-productos/{id_receta}', [receta_producto_controller::class, '
 
 // CRUD de pasos de receta
 Route::apiResource('pasos_receta', paso_receta_controller::class);
+Route::get('pasos-receta/{id_receta}', [paso_receta_controller::class, 'index']);
+

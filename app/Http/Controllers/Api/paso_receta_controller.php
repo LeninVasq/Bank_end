@@ -4,18 +4,23 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\PasoReceta;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;  
-
+use App\Http\Controllers\Controller;
 
 class paso_receta_controller extends Controller
 {
     /**
-     * Display a listing of the steps.
+     * Display a listing of the steps for a specific recipe.
      */
-    public function index()
+    public function index($id_receta)
     {
-        // Devuelve todos los pasos de receta sin paginación
-        return PasoReceta::all();
+        // Devuelve todos los pasos de la receta especificada por id_receta
+        $pasosReceta = PasoReceta::where('id_recetas', $id_receta)->get();
+
+        if ($pasosReceta->isEmpty()) {
+            return response()->json(['message' => 'No se encontraron pasos para esta receta.'], 404);
+        }
+
+        return response()->json(['pasos' => $pasosReceta], 200); // Responde con los pasos de la receta
     }
 
     /**
@@ -24,11 +29,12 @@ class paso_receta_controller extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'id_recetas' => 'required|exists:recetas,id_recetas',
-            'paso_numero' => 'required|integer|unique:pasos_receta,paso_numero,NULL,id_recetas,id_recetas,' . $request->id_recetas, // Validación de unicidad por receta
-            'descripcion' => 'required|string',
+            'id_recetas' => 'required|exists:recetas,id_recetas', // Validación de existencia de receta
+            'paso_numero' => 'required|integer|unique:pasos_receta,paso_numero,NULL,id_recetas,id_recetas,' . $request->id_recetas, // Unicidad por receta
+            'descripcion' => 'required|string', // Validación de descripción
         ]);
 
+        // Crear el nuevo paso
         $pasoReceta = PasoReceta::create([
             'id_recetas' => $request->id_recetas,
             'paso_numero' => $request->paso_numero,
@@ -44,9 +50,9 @@ class paso_receta_controller extends Controller
     public function show($id)
     {
         // Encuentra el paso o lanza un error 404 automáticamente
-        $pasoReceta = PasoReceta::findOrFail($id); 
+        $pasoReceta = PasoReceta::findOrFail($id);
 
-        return response()->json($pasoReceta); // Devuelve el paso encontrado
+        return response()->json($pasoReceta, 200); // Devuelve el paso encontrado
     }
 
     /**
@@ -55,18 +61,20 @@ class paso_receta_controller extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'paso_numero' => 'required|integer|unique:pasos_receta,paso_numero,NULL,id_recetas,id_recetas,' . $request->id_recetas, // Validación de unicidad por receta
-            'descripcion' => 'required|string',
+            'paso_numero' => 'required|integer|unique:pasos_receta,paso_numero,NULL,id_recetas,id_recetas,' . $request->id_recetas, // Unicidad por receta
+            'descripcion' => 'required|string', // Validación de descripción
         ]);
 
-        $pasoReceta = PasoReceta::findOrFail($id); // Encuentra el paso o lanza error 404
+        // Encuentra el paso o lanza error 404
+        $pasoReceta = PasoReceta::findOrFail($id);
 
+        // Actualiza el paso
         $pasoReceta->update([
             'paso_numero' => $request->paso_numero,
             'descripcion' => $request->descripcion,
         ]);
 
-        return response()->json($pasoReceta); // Devuelve el paso actualizado
+        return response()->json($pasoReceta, 200); // Devuelve el paso actualizado
     }
 
     /**
@@ -74,10 +82,12 @@ class paso_receta_controller extends Controller
      */
     public function destroy($id)
     {
-        $pasoReceta = PasoReceta::findOrFail($id); // Encuentra el paso o lanza error 404
+        // Encuentra el paso o lanza error 404
+        $pasoReceta = PasoReceta::findOrFail($id);
 
-        $pasoReceta->delete(); // Elimina el paso de la receta
+        // Elimina el paso
+        $pasoReceta->delete();
 
-        return response()->json(['message' => 'Step deleted successfully']); // Responde con mensaje de éxito
+        return response()->json(['message' => 'Step deleted successfully'], 200); // Responde con mensaje de éxito
     }
 }
