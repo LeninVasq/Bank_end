@@ -238,7 +238,7 @@ class productos_controller extends Controller
             $productoArray['usuario'] = $producto->usuario->correo ?? 'No asignado';
             $productoArray['categoria'] = $producto->categoria->nombre_categoria ?? 'No asignado';
 
-            unset($productoArray['id_unidad_medida'], $productoArray['id_usuario'], $productoArray['id_categoria_pro']);
+            unset( $productoArray['id_usuario'], $productoArray['id_categoria_pro']);
 
             return $productoArray;
         });
