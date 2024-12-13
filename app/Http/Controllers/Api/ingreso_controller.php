@@ -211,7 +211,6 @@ class ingreso_controller extends Controller
                 $data = [
                     'message' => 'La cantidad de productos a retirar excede la cantidad del stock',
                     'status' => 400
-    
                 ];
                 return response()->json($data, 400);
             }
