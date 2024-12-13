@@ -60,7 +60,7 @@ Route::apiResource('recetas', recetas_controller::class);
 
 //crud de receta_producto
 Route::apiResource('receta_producto', receta_producto_controller::class);
-Route::get('receta/{id_receta}', [receta_producto_controller::class, 'getProductosPorReceta']);
+Route::get('receta-productos/{id_receta}', [receta_producto_controller::class, 'getProductosPorReceta']);
 
 
 // CRUD de pasos de receta
