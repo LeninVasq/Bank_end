@@ -19,7 +19,7 @@ class CreateIngresoTable extends Migration
             $table->string('tipo_movimiento'); // Columna tipo_movimiento
             $table->float('costo_unitario'); // Columna cantidad
             $table->float('costo_total'); // Columna cantidad
-            $table->integer('cantidad');  // Columna cantidad
+            $table->float('cantidad');  // Columna cantidad
             $table->string('motivo'); // Columna motivo
             $table->unsignedBigInteger('id_usuario'); // Columna id_usuario como FK
             $table->boolean('estado')->default(true); // Columna estado

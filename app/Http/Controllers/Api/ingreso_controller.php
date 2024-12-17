@@ -163,7 +163,7 @@ class ingreso_controller extends Controller
             'tipo_movimiento' => 'required|string',
             'costo_unitario' => 'required|numeric',
             'costo_total' => 'sometimes|numeric',
-            'cantidad' => 'required|integer',
+            'cantidad' => 'required|numeric',
             'motivo' => 'sometimes|string',
 
         ]);
@@ -172,7 +172,7 @@ class ingreso_controller extends Controller
 
             $data = [
                 'message' => 'Error en la validacion de datos',
-                    'error' => $validation->errors(),
+                 'error' => $validation->errors(),
                 'status' => 400
 
             ];
@@ -180,7 +180,7 @@ class ingreso_controller extends Controller
         }
 
 
-      
+
 
         if ($request->has('motivo')) {
            $motivo = $request->motivo;
@@ -192,7 +192,7 @@ class ingreso_controller extends Controller
         // Insertar el ingreso usando Eloquent
         $ingreso = Ingreso::create([
             'id_producto'     => $request->id_producto,
-            'tipo_movimiento' =>  $request->tipo_movimiento, 
+            'tipo_movimiento' =>  $request->tipo_movimiento,
             'costo_unitario'  => $request->costo_unitario,
             'cantidad'        => $request->cantidad,
             'id_usuario'      => $request->id_usuario,

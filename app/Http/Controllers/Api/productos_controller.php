@@ -223,7 +223,7 @@ class productos_controller extends Controller
         $productos = Productos::with(['unidadMedida', 'usuario', 'categoria'])
         ->where('id_categoria_pro', $id) // Suponiendo que 'categoria_id' es el nombre de la columna que almacena el ID de la categoría
         ->get();
-    
+
         if ($productos->isEmpty()) {
             return response()->json([
                 'message' => 'No hay productos registrados',
