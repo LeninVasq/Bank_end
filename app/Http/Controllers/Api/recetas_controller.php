@@ -20,7 +20,7 @@ class recetas_controller extends Controller
             'tiempo_preparacion' => 'required|integer',
             'numero_porciones' => 'required|integer',
             'dificultad' => 'required|string',
-            'foto' => 'required', 
+            'foto' => 'sometimes', 
         ]);
 
         if ($validation->fails()) {
@@ -114,19 +114,7 @@ class recetas_controller extends Controller
         }
 
         if ($request->has('foto')) {
-            // Verificamos si la imagen está en formato Base64
-            if (strpos($request->foto, 'data:image') === 0) {
-                // Obtenemos la extensión de la imagen
-                $extension = explode('/', explode(':', substr($request->foto, 0, strpos($request->foto, ';')))[1])[1];
-                // Generamos un nombre único para la imagen
-                $filename = 'receta_' . time() . '.' . $extension;
-                // Decodificamos la cadena Base64
-                $image = base64_decode(preg_replace('/^data:image\/\w+;base64,/', '', $request->foto));
-                // Guardamos la imagen en el directorio público
-                $path = public_path('storage/recetas/' . $filename);
-                file_put_contents($path, $image);
-                $recetas->foto = 'storage/recetas/' . $filename; // Actualizamos la foto
-            }
+            $recetas->foto = $request->foto;
         }
 
         if ($request->has('estado')) {
