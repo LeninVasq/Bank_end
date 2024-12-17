@@ -179,10 +179,8 @@ class recetas_controller extends Controller
         $categoriaId = $request->query('categoria_id'); // Obtener el parametro de categoria_id desde la URL
         
         if ($categoriaId) {
-            // Si se proporciona el categoria_id, filtramos las recetas por esa categoría
             $recetas = recetas::where('id_categoria_recetas', $categoriaId)->get();
         } else {
-            // Si no se proporciona un categoria_id, obtenemos todas las recetas
             $recetas = recetas::all();
         }
     

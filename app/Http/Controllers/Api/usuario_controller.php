@@ -194,7 +194,7 @@ class usuario_controller extends Controller
     public function index()
     {
         $data = [];
-        $user = User::all();
+        $user = User::where('id_tipo_usuario', 1 && 'id_tipo_usuario', 2 )->get();
 
         if ($user->isEmpty()) {
             $data = [
