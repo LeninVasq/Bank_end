@@ -194,7 +194,8 @@ class productos_controller extends Controller
             'id_unidad_medida' => $request->id_unidad_medida,
             'id_usuario' => $request->id_usuario,
             'id_categoria_pro' => $request->id_categoria_pro,
-            'foto' => $request->foto
+            'foto' => $request->foto,
+            'stock' => 0
         ]);
 
         if (!$productos) {
@@ -249,6 +250,43 @@ class productos_controller extends Controller
             'productos' => $productosFormateados
         ], 200);
     }
+
+
+    
+
+    public function listarsoloactivos()
+    {
+        $productos = Productos::with(['unidadMedida', 'usuario', 'categoria'])
+        ->where('estado', 1)
+        ->get();
+    
+    if ($productos->isEmpty()) {
+        return response()->json([
+            'message' => 'No hay productos activos registrados',
+            'status' => 200
+        ], 200);
+    }
+    
+    $productosFormateados = $productos->map(function ($producto) {
+        $productoArray = $producto->toArray();
+    
+        $productoArray['unidad_medida'] = $producto->unidadMedida->nombre_unidad ?? 'No asignado';
+        $productoArray['usuario'] = $producto->usuario->correo ?? 'No asignado';
+        $productoArray['categoria'] = $producto->categoria->nombre_categoria ?? 'No asignado';
+    
+        unset($productoArray['id_unidad_medida'], $productoArray['id_usuario'], $productoArray['id_categoria_pro']);
+    
+        return $productoArray;
+    });
+    
+    return response()->json([
+        'message' => 'Productos activos encontrados',
+        'status' => 200,
+        'productos' => $productosFormateados
+    ], 200);
+    
+    }
+
 
     //lista todos los productos
     public function index()

@@ -28,6 +28,8 @@ Route::post('login', [auth_controller::class, 'login']);
 Route::get('listasolo1', [categoria_pro_controller::class, 'listasolo1']);
 Route::get('listasolounidademedia1', [unidad_medida_controller::class, 'listasolo1']);
 
+Route::get('Productosactivos', [productos_controller::class, 'listarsoloactivos']);
+
 
 Route::get('productoscategoria/{id}', [productos_controller::class, 'productocateg']);
 
