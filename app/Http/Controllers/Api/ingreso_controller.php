@@ -232,7 +232,7 @@ class ingreso_controller extends Controller
 
 
         $data = [
-            'message' => $ingreso,
+            'message' => $producto,
             'status' => 201
 
         ];

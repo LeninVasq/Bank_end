@@ -76,7 +76,7 @@ class productos_controller extends Controller
 
         $productos->save();
         $data = [
-            'message' => 'producto actualizado',
+            'message' => $productos,
             'status' => 200
 
         ];
