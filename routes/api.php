@@ -13,7 +13,9 @@ use App\Http\Controllers\Api\unidad_medida_controller;
 use App\Http\Controllers\Api\usuario_controller;
 use App\Models\categoria_pro;
 use App\Models\categoria_recetas;
- use App\Http\Controllers\Api\paso_receta_controller; 
+use App\Http\Controllers\Api\paso_receta_controller; 
+use App\Http\Controllers\Api\menu_controller; 
+
 use App\Models\categorias_pro;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -69,3 +71,5 @@ Route::get('receta-productos/{id_receta}', [receta_producto_controller::class, '
 Route::apiResource('pasos_receta', paso_receta_controller::class);
 Route::get('pasos-receta/{id_receta}', [paso_receta_controller::class, 'index']);
 
+//Crud de menu
+Route::apiResource('menu', menu_controller::class);

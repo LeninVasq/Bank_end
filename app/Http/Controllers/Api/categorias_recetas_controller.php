@@ -16,7 +16,7 @@ class categorias_recetas_controller extends Controller
         $validation = Validator::make($request->all(), [
             'nombre' => 'required|string|unique:categoria_recetas',
             'descripcion' => 'required|string',
-            'foto' => 'required'
+            'foto' => 'sometimes'
         ]);
 
         if ($validation->fails()) {
