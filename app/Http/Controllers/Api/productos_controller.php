@@ -8,6 +8,7 @@ use App\Models\productos;
 use App\Models\unidad_medida;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator as FacadesValidator;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -137,6 +138,7 @@ class productos_controller extends Controller
         $data = [];
         $unidad_medida = unidad_medida::all();
 
+
         if ($unidad_medida->isEmpty()) {
             $data = [
                 'mensaje' => 'No hay unidades de medidas registrados',
@@ -208,8 +210,13 @@ class productos_controller extends Controller
         }
 
 
+        $categorias_productos = DB::table('categoria_count_productos')
+        ->where('id_categoria_pro', $request->id_categoria_pro)
+        ->get();
+
         $data = [
             'message' => $productos,
+            'categoria_producto' => $categorias_productos,
             'status' => 201
 
         ];

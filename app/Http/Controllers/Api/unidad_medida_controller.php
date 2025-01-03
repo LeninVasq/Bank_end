@@ -56,7 +56,7 @@ class unidad_medida_controller extends Controller
 
         $unidad_medida->save();
         $data = [
-            'message' => 'Se ha actualizado la unidad de medida',
+            'message' => $unidad_medida,
             'status' => 200
 
         ];
@@ -133,7 +133,8 @@ class unidad_medida_controller extends Controller
 
         $unidad_medida  = unidad_medida::create([
 
-            'nombre_unidad' => $request->nombre_unidad
+            'nombre_unidad' => $request->nombre_unidad,
+            'estado' => 1
         ]);
 
         if (!$unidad_medida) {
