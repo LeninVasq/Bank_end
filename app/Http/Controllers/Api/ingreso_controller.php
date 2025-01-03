@@ -28,7 +28,7 @@ class ingreso_controller extends Controller
         $validation =  Validator::make($request->all(), [
             'id_producto' => 'sometimes|exists:productos,id_producto',
             'tipo_movimiento' => 'sometimes|string',
-            'costo_unitario' => 'sometimes|numeric',
+            'costo_unitario' => 'sometimes|numeric|000',
             'costo_total' => 'sometimes|numeric',
             'cantidad' => 'sometimes|integer',
             'motivo' => 'sometimes|string',
@@ -160,13 +160,13 @@ class ingreso_controller extends Controller
         $validation =  Validator::make($request->all(), [
             'id_producto' => 'required|exists:productos,id_producto',
             'id_usuario' => 'required|exists:users,id_usuario',
-            'tipo_movimiento' => 'required|string',
+            'tipo_movimiento' => 'required|string|in:Entrada,Salida,Creación de plato',
             'costo_unitario' => 'required|numeric',
             'costo_total' => 'sometimes|numeric',
             'cantidad' => 'required|numeric',
             'motivo' => 'sometimes|string',
-
         ]);
+    
 
         if ($validation->fails()) {
 
@@ -214,6 +214,16 @@ class ingreso_controller extends Controller
                 ];
                 return response()->json($data, 400);
             }
+            $nuevoStock = $stockActual - $ingreso->cantidad;
+        }elseif ($request->tipo_movimiento == "Creación de plato") {
+            if ($ingreso->cantidad > $stockActual) {
+                $data = [
+                    'message' => 'La cantidad de productos a retirar excede la cantidad del stock',
+                    'status' => 400
+                ];
+                return response()->json($data, 400);
+            }
+            // Si el movimiento es "Creación de plato", reducimos el stock
             $nuevoStock = $stockActual - $ingreso->cantidad;
         }
 
