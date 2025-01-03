@@ -66,8 +66,11 @@ class categoria_pro_controller extends Controller
          }
          
          $categorias_pro->save();
+
+         $categorias_pro = DB::table('categoria_count_productos')->where('id_categoria_pro',$id)->get();
+         
          $data = [
-            'message' => 'Categorias productos actualizado',
+            'message' => $categorias_pro,
              'status' => 200
  
          ];
@@ -127,7 +130,7 @@ class categoria_pro_controller extends Controller
          $validation =  Validator::make($request->all(), [
              'nombre_categoria' => 'required|string|unique:categoria_pro',
              'descripcion' => 'required|string',
-             'foto' => 'required'
+             'foto' => 'sometimes'
 
          ]);
  
@@ -160,9 +163,11 @@ class categoria_pro_controller extends Controller
              return response()->json($data, 500);
          }
  
- 
+         
+        $categorias_productos = DB::table('categoria_count_productos')->where('id_categoria_pro',$categorias_pro->id_categoria_pro)->get();
+
          $data = [
-             'message' => $categorias_pro,
+             'message' => $categorias_productos,
              'status' => 201
  
          ];
