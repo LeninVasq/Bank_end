@@ -82,7 +82,7 @@ class usuario_controller extends Controller
 
         $user->save();
         $data = [
-            'message' => 'Usuario actualizado',
+            'message' =>$user,
             'status' => 200
 
         ];
