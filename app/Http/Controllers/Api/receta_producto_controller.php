@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
@@ -25,8 +24,8 @@ class receta_producto_controller extends Controller
 
         $validation = Validator::make($request->all(), [
             'id_producto' => 'sometimes|exists:productos,id_producto',
-            'id_recetas' => 'sometimes|exists:recetas,id_recetas',  // Corregido: ahora valida la tabla recetas con id_recetas
-            'cantidad' => 'sometimes|integer',
+            'id_recetas' => 'sometimes|exists:recetas,id_recetas',
+            'cantidad' => 'sometimes|numeric',  // Cambiado a numeric
             'estado' => 'sometimes'
         ]);
 
@@ -43,11 +42,11 @@ class receta_producto_controller extends Controller
         if ($request->has('id_producto')) {
             $receta_producto->id_producto = $request->id_producto;
         }
-        if ($request->has('id_recetas')) {  // Corregido: actualiza con id_recetas
+        if ($request->has('id_recetas')) {
             $receta_producto->id_receta = $request->id_recetas;
         }
         if ($request->has('cantidad')) {
-            $receta_producto->cantidad = $request->cantidad;
+            $receta_producto->cantidad = round($request->cantidad, 2);  // Redondea a 2 decimales
         }
         if ($request->has('estado')) {
             $receta_producto->estado = $request->estado;
@@ -108,8 +107,8 @@ class receta_producto_controller extends Controller
         // Validación para asegurarse de que los IDs existen en las tablas correspondientes
         $validation = Validator::make($request->all(), [
             'id_producto' => 'required|exists:productos,id_producto',
-            'id_receta' => 'required|exists:recetas,id_recetas',  
-            'cantidad' => 'required|integer',
+            'id_receta' => 'required|exists:recetas,id_recetas',
+            'cantidad' => 'required|numeric',  // Cambiado a numeric
         ]);
 
         if ($validation->fails()) {
@@ -124,8 +123,8 @@ class receta_producto_controller extends Controller
         // Crear el nuevo registro en receta_producto
         $receta_producto = receta_producto::create([
             'id_producto' => $request->id_producto,
-            'id_receta' => $request->id_receta,  // Cambiado a id_recetas si es necesario
-            'cantidad' => $request->cantidad
+            'id_receta' => $request->id_receta,
+            'cantidad' => round($request->cantidad, 2),  // Redondea a 2 decimales
         ]);
 
         if (!$receta_producto) {
@@ -138,7 +137,7 @@ class receta_producto_controller extends Controller
 
         $data = [
             'message' => 'Receta producto creado exitosamente',
-            'receta_producto' => $receta_producto,  // Devolvemos el objeto creado para información adicional
+            'receta_producto' => $receta_producto,
             'status' => 201
         ];
         return response()->json($data, 201);
@@ -186,5 +185,41 @@ class receta_producto_controller extends Controller
             'status' => 200
         ];
         return response()->json($data, 200);
+    }
+
+    public function showRecetaConProductos($id_receta)
+    {
+        // Buscar la receta con los productos asociados
+        $receta = recetas::with(['recetaProductos.producto' => function ($query) {
+            // Solo cargar la relación necesaria de unidadMedida
+            $query->with('unidadMedida');
+        }])->find($id_receta);
+
+        if (!$receta) {
+            return response()->json([
+                'message' => 'La receta no existe',
+                'status' => 404
+            ], 404);
+        }
+
+        // Formatear la respuesta para que contenga tanto la receta como los productos con sus detalles
+        $recetaFormateada = $receta->toArray();
+        $recetaFormateada['productos'] = $receta->recetaProductos->map(function ($recetaProducto) {
+            $producto = $recetaProducto->producto; // Obtenemos el producto asociado
+            $productoArray = $producto->toArray();
+
+            // Solo formateamos la relación de unidadMedida
+            $productoArray['unidad_medida'] = $producto->unidadMedida->nombre_unidad ?? 'No asignado';
+
+            // Eliminar campos innecesarios para la respuesta
+            unset($productoArray['id_unidad_medida'], $productoArray['id_usuario'], $productoArray['id_categoria_pro']);
+            return $productoArray;
+        });
+
+        return response()->json([
+            'message' => 'Receta encontrada con productos',
+            'status' => 200,
+            'receta' => $recetaFormateada
+        ], 200);
     }
 }

@@ -27,10 +27,12 @@ class receta_producto extends Model
     ];
 
     // Relación con el modelo Producto
-    public function producto()
-    {
-        return $this->belongsTo(productos::class, 'id_producto', 'id_producto');
-    }
+  // En el modelo receta_producto (App\Models\receta_producto)
+public function producto()
+{
+    return $this->belongsTo(productos::class, 'id_producto', 'id_producto');
+}
+
 
     // Relación con el modelo Receta
     public function receta()
