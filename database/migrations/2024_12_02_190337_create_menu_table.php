@@ -22,7 +22,10 @@ class CreateMenuTable extends Migration
             $table->string('descripcion'); // Columna descripcion
             $table->longText('img'); // Columna img para la imagen del menú
             $table->boolean('estado'); // Columna estado (activo o inactivo)
+            $table->unsignedBigInteger('id_categoria')->nullable();
             $table->timestamps(); // Crea las columnas created_at y updated_at
+            $table->foreign('id_categoria')->references('id_categoria_menu')->on('categoria_menu')->onDelete('cascade');
+
         });
 
         DB::statement("

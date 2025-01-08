@@ -20,7 +20,12 @@ class Menu extends Model
      * @var string
      */
     protected $primaryKey = 'id_menu'; 
-
+  /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
+    public $timestamps = true;
     /**
      * The attributes that are mass assignable.
      *
@@ -30,14 +35,31 @@ class Menu extends Model
         'nombre',
         'precio',
         'cantidad_platos',
-        'descripcion',
+        'descripcion', 
         'img',
         'estado',
+        'id_categoria',
     ];
 
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
         'estado' => 'boolean', 
     ];
+
+    public function categoria()
+    {
+        return $this->belongsTo(categoria_menu::class, 'id_categoria');
+    }
 
 }

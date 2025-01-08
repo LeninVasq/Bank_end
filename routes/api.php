@@ -15,6 +15,8 @@ use App\Models\categoria_pro;
 use App\Models\categoria_recetas;
 use App\Http\Controllers\Api\paso_receta_controller; 
 use App\Http\Controllers\Api\menu_controller; 
+use App\Http\Controllers\Api\categoria_menu_controller; 
+
 
 use App\Models\categorias_pro;
 use Illuminate\Http\Request;
@@ -78,3 +80,6 @@ Route::get('pasos-receta/{id_receta}', [paso_receta_controller::class, 'index'])
 
 //Crud de menu
 Route::apiResource('menu', menu_controller::class);
+Route::apiResource('categorias_menu', categoria_menu_controller::class);
+Route::get('app_menu_filter', [menu_controller::class, 'app_menu_filter']);
+Route::get('filter_cero', [menu_controller::class, 'menu_filter_cero']);
