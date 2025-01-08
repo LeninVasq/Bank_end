@@ -23,6 +23,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
+//apis de la aplicacion movil
+
+Route::get('app_menu', [menu_controller::class, 'app_menu']);
+Route::get('app_menu_img', [menu_controller::class, 'app_menu_img']);
+Route::post('app_menu_filter', [menu_controller::class, 'app_menu_filter']);
+Route::get('get_image_and_email',[usuario_controller::class, 'get_image_and_email']);
+
+
 //autentificacion
 Route::post('registro', [auth_controller::class, 'register']);
 Route::post('login', [auth_controller::class, 'login']);
@@ -34,9 +42,7 @@ Route::get('listasolounidademedia1', [unidad_medida_controller::class, 'listasol
 
 Route::get('Productosactivos', [productos_controller::class, 'listarsoloactivos']);
 
-Route::get('app_menu', [menu_controller::class, 'app_menu']);
-Route::get('app_menu_img', [menu_controller::class, 'app_menu_img']);
-Route::post('app_menu_filter', [menu_controller::class, 'app_menu_filter']);
+
 
 Route::get('productoscategoria/{id}', [productos_controller::class, 'productocateg']);
 
@@ -81,5 +87,5 @@ Route::get('pasos-receta/{id_receta}', [paso_receta_controller::class, 'index'])
 //Crud de menu
 Route::apiResource('menu', menu_controller::class);
 Route::apiResource('categorias_menu', categoria_menu_controller::class);
-Route::get('app_menu_filter', [menu_controller::class, 'app_menu_filter']);
 Route::get('filter_cero', [menu_controller::class, 'menu_filter_cero']);
+Route::get('menu_filter', [menu_controller::class, 'menu_filter']);

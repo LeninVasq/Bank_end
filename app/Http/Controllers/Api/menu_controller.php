@@ -9,7 +9,6 @@ use Illuminate\Validation\Rule;
 
 class menu_controller extends Controller
 {
-    
     /**
      * Mostrar todos los menús.
      *
@@ -17,50 +16,26 @@ class menu_controller extends Controller
      */
 
 
-     public function app_menu_filter(Request $request)
+
+
+    public function app_menu_filter(Request $request)
      {
-         // Filtramos por nombre y id_categoria_menu
-         $query = Menu::query();
-     
-         // Verificar si el parámetro id_categoria_menu está presente en la solicitud
-         if ($request->has('id_categoria') && !empty($request->id_categoria)) {
-             $id_categoria = $request->id_categoria;  // Obtener el valor del parámetro
-             $query->where('id_categoria', $id_categoria);  // Filtrar por categoría
-         } else {
-             // Si no se pasa el parámetro, puedes devolver un error o manejar el caso
-             return response()->json(['message' => 'Falta el parámetro id_categoria'], 400);
-         }
-     
-         // Obtener los resultados filtrados
-         $menus = $query->get();
-     
-         // Devolver los resultados en formato JSON
+        
+        $menus = Menu::where('nombre', 'like', '%' . $request->nombre . '%')->get();
+        
+
          $data = [
-             'message' => $menus,
-             'status' => 200
-         ];
-         return response()->json($data, 200);
+            'message' => $menus,
+            'status' => 200
+
+        ]; 
+         return response()->json($data, 200); 
      }
 
-     public function menu_filter_cero(Request $request)
-{
-    // Filtrar los menús donde el campo 'id_categoria' sea null
-    $menus = Menu::whereNull('id_categoria')->get();  // Recuperamos todos los campos
     
-    // Verificar si hay menús disponibles
-    if ($menus->isEmpty()) {
-        return response()->json(['message' => 'No hay menús sin categoría.'], 404);  // Si no hay resultados
-    }
-    
-    // Retornar los menús filtrados
-    return response()->json([
-        'message' => $menus,
-        'status' => 200
-    ], 200);
-}
+     
+     
 
-     
-     
      public function app_menu_img()
      {
         $menus = DB::table('app_menu_img')->get();
@@ -86,6 +61,46 @@ class menu_controller extends Controller
          return response()->json($data, 200); // Retorna los menús en formato JSON
      }
 
+
+     public function menu_filter(Request $request)
+     {
+         // Filtramos por nombre y id_categoria_menu
+         $query = Menu::query();
+     
+         // Verificar si el parámetro id_categoria_menu está presente en la solicitud
+         if ($request->has('id_categoria') && !empty($request->id_categoria)) {
+             $id_categoria = $request->id_categoria;  // Obtener el valor del parámetro
+             $query->where('id_categoria', $id_categoria);  // Filtrar por categoría
+         } else {
+             // Si no se pasa el parámetro, puedes devolver un error o manejar el caso
+             return response()->json(['message' => 'Falta el parámetro id_categoria'], 400);
+         }
+     
+         // Obtener los resultados filtrados
+         $menus = $query->get();
+     
+         // Devolver los resultados en formato JSON
+         $data = [
+             'message' => $menus,
+             'status' => 200
+         ];
+         return response()->json($data, 200);
+     }
+
+     public function menu_filter_cero(Request $request)
+    {
+        $menus = Menu::whereNull('id_categoria')->get(); 
+    
+    if ($menus->isEmpty()) {
+        return response()->json(['message' => 'No hay menús sin categoría.'], 404);  
+    }
+    
+    return response()->json([
+        'message' => $menus,
+        'status' => 200
+    ], 200);
+    }
+
     public function index()
     {
         $menus = Menu::all(); // Obtiene todos los menús
@@ -106,8 +121,7 @@ class menu_controller extends Controller
             'cantidad_platos' => 'required|integer',
             'descripcion' => 'string',
             'img' => 'required',
-            'estado' => 'required|boolean', 
-            'id_categoria'=>'integer|nullable'
+            'estado' => 'required|boolean',
         ]);
 
         $menu = Menu::create($request->all()); // Crea un nuevo menú con los datos recibidos
@@ -153,7 +167,6 @@ class menu_controller extends Controller
             'descripcion' => 'string',
             'img' => 'string',
             'estado' => 'boolean',
-            'id_categoria'=>'integer|nullable'
         ]);
 
         $menu->update($request->all()); // Actualiza el menú con los nuevos datos
@@ -177,5 +190,4 @@ class menu_controller extends Controller
         $menu->delete(); // Elimina el menú
         return response()->json(['message' => 'Menú eliminado exitosamente'], 200); // Respuesta de éxito
     }
-    
 }
