@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Menu;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class menu_controller extends Controller
@@ -13,6 +14,48 @@ class menu_controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+
+    public function app_menu_filter(Request $request)
+     {
+        
+        $menus = Menu::where('nombre', 'like', '%' . $request->nombre . '%')->get();
+        
+
+         $data = [
+            'message' => $menus,
+            'status' => 200
+
+        ]; 
+         return response()->json($data, 200); // Retorna los menús en formato JSON
+     }
+
+
+     public function app_menu_img()
+     {
+        $menus = DB::table('app_menu_img')->get();
+
+         $data = [
+            'message' => $menus,
+            'status' => 200
+
+        ]; 
+         return response()->json($data, 200); // Retorna los menús en formato JSON
+     }
+
+    public function app_menu()
+     {
+        //$menus = Menu::all();
+        $menus = DB::table('app_menu')->get();
+
+         $data = [
+            'message' => $menus,
+            'status' => 200
+
+        ]; 
+         return response()->json($data, 200); // Retorna los menús en formato JSON
+     }
+
     public function index()
     {
         $menus = Menu::all(); // Obtiene todos los menús

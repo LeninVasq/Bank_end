@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateMenuTable extends Migration
@@ -23,7 +24,19 @@ class CreateMenuTable extends Migration
             $table->boolean('estado'); // Columna estado (activo o inactivo)
             $table->timestamps(); // Crea las columnas created_at y updated_at
         });
+
+        DB::statement("
+        CREATE VIEW app_menu AS
+        SELECT id_menu,nombre,precio,cantidad_platos FROM menu
+        ");
+        DB::statement("
+        CREATE VIEW app_menu_img AS
+        SELECT id_menu,img FROM menu 
+        ");    
+
+
     }
+
 
     /**
      * Reverse the migrations.

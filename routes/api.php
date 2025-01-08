@@ -32,6 +32,9 @@ Route::get('listasolounidademedia1', [unidad_medida_controller::class, 'listasol
 
 Route::get('Productosactivos', [productos_controller::class, 'listarsoloactivos']);
 
+Route::get('app_menu', [menu_controller::class, 'app_menu']);
+Route::get('app_menu_img', [menu_controller::class, 'app_menu_img']);
+Route::post('app_menu_filter', [menu_controller::class, 'app_menu_filter']);
 
 Route::get('productoscategoria/{id}', [productos_controller::class, 'productocateg']);
 
