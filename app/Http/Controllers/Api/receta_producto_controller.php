@@ -102,46 +102,61 @@ class receta_producto_controller extends Controller
     }
 
     // Inserción de receta_producto
-    public function store(Request $request)
-    {
-        // Validación para asegurarse de que los IDs existen en las tablas correspondientes
-        $validation = Validator::make($request->all(), [
-            'id_producto' => 'required|exists:productos,id_producto',
-            'id_receta' => 'required|exists:recetas,id_recetas',
-            'cantidad' => 'required|numeric',  // Cambiado a numeric
-        ]);
+    // Inserción de receta_producto
+public function store(Request $request)
+{
+    // Validación para asegurarse de que los IDs existen en las tablas correspondientes
+    $validation = Validator::make($request->all(), [
+        'id_producto' => 'required|exists:productos,id_producto',
+        'id_receta' => 'required|exists:recetas,id_recetas',
+        'cantidad' => 'required|numeric',  // Cambiado a numeric
+    ]);
 
-        if ($validation->fails()) {
-            $data = [
-                'message' => 'Error en la validación de datos',
-                'error' => $validation->errors(),
-                'status' => 400
-            ];
-            return response()->json($data, 400);
-        }
-
-        // Crear el nuevo registro en receta_producto
-        $receta_producto = receta_producto::create([
-            'id_producto' => $request->id_producto,
-            'id_receta' => $request->id_receta,
-            'cantidad' => round($request->cantidad, 2),  // Redondea a 2 decimales
-        ]);
-
-        if (!$receta_producto) {
-            $data = [
-                'message' => 'Error al crear el registro en receta_producto',
-                'status' => 500
-            ];
-            return response()->json($data, 500);
-        }
-
+    if ($validation->fails()) {
         $data = [
-            'message' => 'Receta producto creado exitosamente',
-            'receta_producto' => $receta_producto,
-            'status' => 201
+            'message' => 'Error en la validación de datos',
+            'error' => $validation->errors(),
+            'status' => 400
         ];
-        return response()->json($data, 201);
+        return response()->json($data, 400);
     }
+
+    // Verificar si el producto ya está agregado a la receta
+    $existeProductoEnReceta = receta_producto::where('id_receta', $request->id_receta)
+        ->where('id_producto', $request->id_producto)
+        ->exists();
+
+    if ($existeProductoEnReceta) {
+        $data = [
+            'message' => 'Este producto ya está agregado a la receta.',
+            'status' => 400
+        ];
+        return response()->json($data, 400);  // Error si el producto ya está en la receta
+    }
+
+    // Crear el nuevo registro en receta_producto
+    $receta_producto = receta_producto::create([
+        'id_producto' => $request->id_producto,
+        'id_receta' => $request->id_receta,
+        'cantidad' => round($request->cantidad, 2),  // Redondea a 2 decimales
+    ]);
+
+    if (!$receta_producto) {
+        $data = [
+            'message' => 'Error al crear el registro en receta_producto',
+            'status' => 500
+        ];
+        return response()->json($data, 500);
+    }
+
+    $data = [
+        'message' => 'Receta producto creado exitosamente',
+        'receta_producto' => $receta_producto,
+        'status' => 201
+    ];
+    return response()->json($data, 201);
+}
+
 
     // Lista todas las categorías de receta_producto
     public function index()
