@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Menu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 class menu_controller extends Controller
@@ -52,6 +53,19 @@ class menu_controller extends Controller
      {
         //$menus = Menu::all();
         $menus = DB::table('app_menu')->get();
+
+         $data = [
+            'message' => $menus,
+            'status' => 200
+
+        ]; 
+         return response()->json($data, 200); // Retorna los menús en formato JSON
+     }
+
+
+     public function app_category_menu()
+     {
+        $menus = DB::table('app_categoria_menu')->get();
 
          $data = [
             'message' => $menus,
@@ -115,19 +129,32 @@ class menu_controller extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validation =  Validator::make($request->all(), [
             'nombre' => 'required|string',
             'precio' => 'numeric',
             'cantidad_platos' => 'required|integer',
             'descripcion' => 'string',
             'img' => 'required',
             'estado' => 'required|boolean',
+            'id_categoria' => 'integer|exists:categoria_menu,id_categoria_menu', // Asegúrate que id_categoria sea válido
+        
         ]);
+
+        if ($validation->fails()) {
+
+            $data = [
+                'message' => 'Error en la validation de datos',
+                'error' => $validation->errors(),
+                'status' => 400
+
+            ];
+            return response()->json($data, 400);
+        }
+        
 
         $menu = Menu::create($request->all()); // Crea un nuevo menú con los datos recibidos
         return response()->json($menu, 201); // Retorna el menú creado con código de estado 201 (creado)
     }
-
     /**
      * Mostrar un menú específico.
      *

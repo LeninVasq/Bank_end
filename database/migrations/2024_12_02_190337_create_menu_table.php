@@ -36,6 +36,10 @@ class CreateMenuTable extends Migration
         CREATE VIEW app_menu_img AS
         SELECT id_menu,img FROM menu 
         ");    
+        DB::statement("
+        CREATE VIEW app_categoria_menu AS
+        SELECT id_categoria_menu,nombre,foto FROM categoria_menu
+        ");
 
 
     }
