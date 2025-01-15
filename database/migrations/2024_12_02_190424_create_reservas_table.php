@@ -16,12 +16,10 @@ class CreateReservasTable extends Migration
         Schema::create('reservas', function (Blueprint $table) {
             $table->id('id_reservas'); // Crea la columna id_reservas como llave primaria
             $table->unsignedBigInteger('id_usuario'); // Columna id_usuario como FK
-            $table->dateTime('fecha_entrega'); // Columna fecha_entrega
-            $table->dateTime('fecha_reserva'); // Columna fecha_reserva
-            $table->boolean('estado'); // Columna estado (activo o inactivo)
+            $table->dateTime('fecha_entrega')->nullable(); // Columna fecha_entrega
+            $table->boolean('estado')->default(true); // Columna estado (activo o inactivo)
             $table->timestamps(); // Crea las columnas created_at y updated_at
 
-            // Definición de claves foráneas
             $table->foreign('id_usuario')->references('id_usuario')->on('users')->onDelete('cascade');
         });
     }

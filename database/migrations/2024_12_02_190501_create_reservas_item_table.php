@@ -17,7 +17,7 @@ class CreateReservasItemTable extends Migration
             $table->id('id_reserva_item'); // Crea la columna id_reserva_item como llave primaria
             $table->unsignedBigInteger('id_menu'); // Columna id_menu como FK
             $table->integer('cantidad'); // Columna cantidad
-            $table->boolean('estado'); // Columna estado (activo o inactivo)
+            $table->boolean('estado')->default(true); // Columna estado (activo o inactivo)
             $table->timestamps(); // Crea las columnas created_at y updated_at
             $table->unsignedBigInteger('id_reservas'); // Columna id_reserva_item como FK
 

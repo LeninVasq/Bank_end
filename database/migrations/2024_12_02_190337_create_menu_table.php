@@ -28,7 +28,6 @@ class CreateMenuTable extends Migration
         });
 
         DB::statement("
-DELIMITER $$
 
 CREATE PROCEDURE app_menu(
     IN id_categoria_param INT
@@ -41,14 +40,12 @@ BEGIN
         `menu`.`cantidad_platos` AS `cantidad_platos`
     FROM `menu`
     WHERE `id_categoria` = id_categoria_param AND cantidad_platos > 0;
-END $$
-
-DELIMITER ;
+END 
 
         
         ");
         DB::statement("
-DELIMITER $$
+
 
 CREATE PROCEDURE app_menu_img(
     IN id_categoria_param INT
@@ -59,9 +56,7 @@ BEGIN
         `menu`.`img`     AS `img`
     FROM `menu`
     WHERE `id_categoria` = id_categoria_param AND cantidad_platos > 0;
-END $$
-
-DELIMITER ;
+END 
         ");
         DB::statement("
         CREATE VIEW app_categoria_menu AS
