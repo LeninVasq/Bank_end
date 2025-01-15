@@ -18,6 +18,22 @@ class menu_controller extends Controller
 
 
 
+     public function app_filter_id($id)
+    {
+        $menu = Menu::find($id);
+
+        if (!$menu) {
+            return response()->json(['message' => 'Menú no encontrado'], 404); // Si no se encuentra el menú
+        }
+
+        $data = [
+            'message' => $menu,
+            'status' => 200
+
+        ]; 
+         return response()->json($data, 200); 
+                }
+
 
     public function app_menu_filter(Request $request)
      {
@@ -37,9 +53,10 @@ class menu_controller extends Controller
      
      
 
-     public function app_menu_img()
+     public function app_menu_img($id)
      {
-        $menus = DB::table('app_menu_img')->get();
+        $menus = DB::select('CALL app_menu_img(?)', [$id]);
+        
 
          $data = [
             'message' => $menus,
@@ -49,10 +66,11 @@ class menu_controller extends Controller
          return response()->json($data, 200); // Retorna los menús en formato JSON
      }
 
-    public function app_menu()
+    public function app_menu($id)
      {
         //$menus = Menu::all();
-        $menus = DB::table('app_menu')->get();
+        $menus = DB::select('CALL app_menu(?)', [$id]);
+
 
          $data = [
             'message' => $menus,

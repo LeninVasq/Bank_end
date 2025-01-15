@@ -13,12 +13,12 @@ class usuario_controller extends Controller
 {
 
     
-    public function get_image_and_email($id){
+    public function image_and_email($id){
         $user = User::find($id);
         
         $data = [
             'correo'=> $user->correo,
-            'tipo_usuario'=> $user->img,
+            'img'=> $user->img,
         ];
 
         return response()->json($data, 200); 

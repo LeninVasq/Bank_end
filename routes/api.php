@@ -25,10 +25,11 @@ use Illuminate\Support\Facades\Route;
 
 //apis de la aplicacion movil
 Route::get('app_category_menu', [menu_controller::class, 'app_category_menu']);
-Route::get('app_menu', [menu_controller::class, 'app_menu']);
-Route::get('app_menu_img', [menu_controller::class, 'app_menu_img']);
+Route::get('app_filter_id/{id}', [menu_controller::class, 'app_filter_id']);
+Route::get('app_menu/{id}', [menu_controller::class, 'app_menu']);
+Route::get('app_menu_img/{id}', [menu_controller::class, 'app_menu_img']);
 Route::post('app_menu_filter', [menu_controller::class, 'app_menu_filter']);
-Route::get('get_image_and_email',[usuario_controller::class, 'get_image_and_email']);
+Route::get('image_and_email/{id}',[usuario_controller::class, 'image_and_email']);
 
 
 //autentificacion
