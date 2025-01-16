@@ -38,7 +38,10 @@ class menu_controller extends Controller
     public function app_menu_filter(Request $request)
      {
         
-        $menus = Menu::where('nombre', 'like', '%' . $request->nombre . '%')->get();
+        $menus = Menu::where('nombre', 'like', '%' . $request->nombre . '%')
+    ->where('cantidad_platos', '>', 0)
+    ->get();
+
         
 
          $data = [

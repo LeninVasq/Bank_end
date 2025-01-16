@@ -13,6 +13,7 @@ class usuario_controller extends Controller
 {
 
     
+    
     public function image_and_email($id){
         $user = User::find($id);
         
