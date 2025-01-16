@@ -31,7 +31,7 @@ class reservas_controller extends Controller
         if ($request->has('fecha_entrega')) {
             $reservas->fecha_entrega = $request->fecha_entrega;
         }
-        
+
 
         $reservas->save();
 
@@ -45,27 +45,27 @@ class reservas_controller extends Controller
 
     public function reservas($id)
     {
-       $reservas = DB::select('CALL reservas_web(?)', [$id]);
-       
+        $reservas = DB::select('CALL reservas_web(?)', [$id]);
+
 
         $data = [
-           'message' => $reservas,
-           'status' => 200
+            'message' => $reservas,
+            'status' => 200
 
-       ]; 
+        ];
         return response()->json($data, 200); // Retorna los menús en formato JSON
     }
 
     public function app_reservas($id)
     {
-       $reservas = DB::select('CALL app_reservas(?)', [$id]);
-       
+        $reservas = DB::select('CALL app_reservas(?)', [$id]);
+
 
         $data = [
-           'message' => $reservas,
-           'status' => 200
+            'message' => $reservas,
+            'status' => 200
 
-       ]; 
+        ];
         return response()->json($data, 200); // Retorna los menús en formato JSON
     }
 
@@ -77,7 +77,7 @@ class reservas_controller extends Controller
             'id_menu' => 'required|exists:menu,id_menu',
             'cantidad' => 'required|int',
         ]);
-        
+
         if ($validation->fails()) {
             $data = [
                 'message' => 'El usuario no existe',
@@ -87,40 +87,98 @@ class reservas_controller extends Controller
             return response()->json($data, 400);
         }
 
-        $menu = Menu::find($request->id_menu);
 
-        $stockActual = $menu->cantidad_platos;
+        $filter_reservas_by_usuario = reservas::where('id_usuario', $request->id_usuario)->get();
+        $dentra = "";
+        if ($filter_reservas_by_usuario->isEmpty()) {
+            $dentra = "No encntro reservas con el id del usuario";
+            $menu = Menu::find($request->id_menu);
 
-        if($request->cantidad > $stockActual){
+            $stockActual = $menu->cantidad_platos;
+
+            if ($request->cantidad > $stockActual) {
+                $data = [
+                    'excess' => 'La cantidad elegida supera la cantidad de platos que hay',
+                    'status' => 400
+                ];
+                return response()->json($data, 400);
+            }
+
+            $reservas = reservas::create([
+                'id_usuario' => $request->id_usuario,
+            ]);
+
+            $reservas_item = reservas_item::create([
+                'id_menu' => $request->id_menu,
+                'cantidad' => $request->cantidad,
+                'precio' => $request->precio,
+                'id_reservas' => $reservas->id_reservas,
+            ]);
+
+
+            $nuevoStock = $stockActual - $request->cantidad;
+
+
+
+            $menu->cantidad_platos = $nuevoStock;
+
+            $menu->save();
             $data = [
-                'excess' => 'La cantidad elegida supera la cantidad de platos que hay',
-                'status' => 400
+                'message' => "Se ha reservado exitosamente",
+                'status' => 201
+    
             ];
-            return response()->json($data, 400);
+            return response()->json($data, 201);
+        } else {
+            $dentra = " encntro reservas con el id del usuario";
+
+            $filter_reservas_item_by_menu = reservas_item::where('id_menu',  $request->id_menu)->get();
+            if ($filter_reservas_item_by_menu->isEmpty()) {
+                $dentra = "No encntro el id del menu en reservas item";
+
+                $menu = Menu::find($request->id_menu);
+
+                $stockActual = $menu->cantidad_platos;
+    
+                if ($request->cantidad > $stockActual) {
+                    $data = [
+                        'excess' => 'La cantidad elegida supera la cantidad de platos que hay',
+                        'status' => 400
+                    ];
+                    return response()->json($data, 400);
+                }
+    
+                $reservas = reservas::create([
+                    'id_usuario' => $request->id_usuario,
+                ]);
+    
+                $reservas_item = reservas_item::create([
+                    'id_menu' => $request->id_menu,
+                    'cantidad' => $request->cantidad,
+                    'precio' => $request->precio,
+                    'id_reservas' => $reservas->id_reservas,
+                ]);
+    
+    
+                $nuevoStock = $stockActual - $request->cantidad;
+    
+    
+    
+                $menu->cantidad_platos = $nuevoStock;
+    
+                $menu->save();
+            } else {
+                $id_reservas = $filter_reservas_item_by_menu->pluck('id_reservas');
+                $dentra = " encntro reservas con el id del menu";
+
+              
+            }
         }
 
-        $reservas = reservas::create([
-            'id_usuario' => $request->id_usuario,
-        ]);
-
-        $reservas_item = reservas_item::create([
-            'id_menu' => $request->id_menu,
-            'cantidad' => $request->cantidad,
-            'precio' => $request->precio,
-            'id_reservas' =>$reservas->id_reservas,
-        ]);
-
-        
-        $nuevoStock = $stockActual - $request->cantidad;
-
-        
-
-        $menu->cantidad_platos = $nuevoStock;
-
-        $menu->save();
 
 
         $data = [
+            'h' => $id_reservas ,
             'message' => "Se ha reservado exitosamente",
             'status' => 201
 
@@ -134,9 +192,9 @@ class reservas_controller extends Controller
         $data = [];
 
         $reservas = reservas::all();
-        
-        
-         
+
+
+
         if ($reservas->isEmpty()) {
             $data = [
                 'message' => 'No hay reservas registrados',
