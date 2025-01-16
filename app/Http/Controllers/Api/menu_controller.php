@@ -32,7 +32,7 @@ class menu_controller extends Controller
 
         ]; 
          return response()->json($data, 200); 
-                }
+     }
 
 
     public function app_menu_filter(Request $request)

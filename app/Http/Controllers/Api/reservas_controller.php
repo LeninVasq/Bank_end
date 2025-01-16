@@ -7,11 +7,67 @@ use App\Models\Menu;
 use App\Models\reservas;
 use App\Models\reservas_item;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class reservas_controller extends Controller
 {
 
+    public function update(Request $request, $id)
+    {
+        $reservas = reservas::find($id);
+        if (!$reservas) {
+            $data = [
+                'message' => 'El id de la reserva no existe',
+                'status' => 404
+            ];
+            return response()->json($data, 404);
+        }
+
+
+
+
+        // Solo actualiza los campos que se proporcionan
+        if ($request->has('fecha_entrega')) {
+            $reservas->fecha_entrega = $request->fecha_entrega;
+        }
+        
+
+        $reservas->save();
+
+        $data = [
+            'message' => 'Reserva actualizada',
+            'status' => 200
+        ];
+        return response()->json($data, 200);
+    }
+
+
+    public function reservas($id)
+    {
+       $reservas = DB::select('CALL reservas_web(?)', [$id]);
+       
+
+        $data = [
+           'message' => $reservas,
+           'status' => 200
+
+       ]; 
+        return response()->json($data, 200); // Retorna los menús en formato JSON
+    }
+
+    public function app_reservas($id)
+    {
+       $reservas = DB::select('CALL app_reservas(?)', [$id]);
+       
+
+        $data = [
+           'message' => $reservas,
+           'status' => 200
+
+       ]; 
+        return response()->json($data, 200); // Retorna los menús en formato JSON
+    }
 
     public function store(Request $request)
     {
@@ -50,8 +106,8 @@ class reservas_controller extends Controller
         $reservas_item = reservas_item::create([
             'id_menu' => $request->id_menu,
             'cantidad' => $request->cantidad,
+            'precio' => $request->precio,
             'id_reservas' =>$reservas->id_reservas,
-
         ]);
 
         

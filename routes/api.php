@@ -29,6 +29,11 @@ Route::get('app_menu/{id}', [menu_controller::class, 'app_menu']);
 Route::get('app_menu_img/{id}', [menu_controller::class, 'app_menu_img']);
 Route::post('app_menu_filter', [menu_controller::class, 'app_menu_filter']);
 Route::get('image_and_email/{id}',[usuario_controller::class, 'image_and_email']);
+Route::get('app_reservas/{id}',[reservas_controller::class, 'app_reservas']);
+
+
+
+Route::get('reservas/{id}',[reservas_controller::class, 'reservas']);
 Route::apiResource('reservas', reservas_controller::class);
 
 

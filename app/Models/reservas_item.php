@@ -16,6 +16,7 @@ class reservas_item extends Model
     protected $fillable = [
         'id_menu',
         'cantidad',
+        'precio',
         'estado',
         'id_reservas',
     ];
