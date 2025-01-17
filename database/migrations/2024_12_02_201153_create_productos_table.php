@@ -20,7 +20,7 @@ class CreateProductosTable extends Migration
         Schema::create('productos', function (Blueprint $table) {
             $table->id('id_producto'); // Crea la columna id_producto como llave primaria
             $table->string('nombre'); // Columna nombre
-            $table->string('descripcion'); // Columna descripcion
+            $table->string('descripcion')->nullable(); // Columna descripcion
             $table->float('stock')->default(0); // Columna descripcion
             $table->unsignedBigInteger('id_unidad_medida'); // Columna id_unidad_medida como FK
             $table->unsignedBigInteger('id_usuario'); // Columna id_usuario como FK
