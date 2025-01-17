@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\paso_receta_controller;
 use App\Http\Controllers\Api\menu_controller; 
 use App\Http\Controllers\Api\categoria_menu_controller;
 use App\Http\Controllers\Api\reservas_controller;
+use App\Http\Controllers\Api\reservas_item_controller;
 use App\Models\categorias_pro;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,9 @@ Route::get('app_reservas/{id}',[reservas_controller::class, 'app_reservas']);
 
 Route::get('reservas/{id}',[reservas_controller::class, 'reservas']);
 Route::apiResource('reservas', reservas_controller::class);
+
+Route::apiResource('reservas_item', reservas_item_controller::class);
+
 
 
 

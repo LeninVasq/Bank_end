@@ -17,6 +17,22 @@ class menu_controller extends Controller
      */
 
 
+     public function app_filter_eliminar_reserva($id)
+     {
+         $menu = Menu::find($id);
+ 
+         if (!$menu) {
+             return response()->json(['message' => 'Menú no encontrado'], 404); // Si no se encuentra el menú
+         }
+ 
+         $data = [
+             'message' => $menu,
+             'status' => 200
+ 
+         ]; 
+          return response()->json($data, 200); 
+      }
+
 
      public function app_filter_id($id)
     {
@@ -39,8 +55,9 @@ class menu_controller extends Controller
      {
         
         $menus = Menu::where('nombre', 'like', '%' . $request->nombre . '%')
-    ->where('cantidad_platos', '>', 0)
-    ->get();
+        ->where('cantidad_platos', '>', 0)
+        ->whereNotNull('id_categoria')
+        ->get();
 
         
 

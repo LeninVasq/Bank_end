@@ -171,7 +171,7 @@ class productos_controller extends Controller
 
         $validation =  FacadesValidator::make($request->all(), [
             'nombre' => 'required|string|unique:productos',
-            'descripcion' => 'required|string',
+            'descripcion' => 'sometimes|string',
             'id_unidad_medida' => 'required|exists:unidad_medida,id_unidad_medida',
             'id_usuario' => 'required|exists:users,id_usuario',
             'id_categoria_pro' => 'required|exists:categoria_pro,id_categoria_pro',
