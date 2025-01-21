@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Menu;
+use App\Models\productos;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+
+use function PHPUnit\Framework\isEmpty;
 
 class menu_controller extends Controller
 {
@@ -174,8 +177,8 @@ class menu_controller extends Controller
             'descripcion' => 'string',
             'img' => 'required',
             'estado' => 'required|boolean',
-            'id_categoria' => 'integer|exists:categoria_menu,id_categoria_menu', // Asegúrate que id_categoria sea válido
-        
+            'id_categoria' => 'integer|exists:categoria_menu,id_categoria_menu',
+       
         ]);
 
         if ($validation->fails()) {
@@ -190,8 +193,28 @@ class menu_controller extends Controller
         }
         
 
-        $menu = Menu::create($request->all()); // Crea un nuevo menú con los datos recibidos
-        return response()->json($menu, 201); // Retorna el menú creado con código de estado 201 (creado)
+        if(empty($request->id_producto)){
+            // Crea un nuevo menú con los datos recibidos
+            // Retorna el menú creado con código de estado 201 (creado)
+            $menu = Menu::create($request->all()); 
+            return response()->json($menu, 201);
+        }
+        else{
+            $productos_select = productos::find($request->id_producto);
+            $stockcurrent = $productos_select->stock;
+            $newstock = $stockcurrent - $request->cantidad_platos;
+            
+            $productos_select->stock = $newstock;
+            $productos_select->save();
+
+            $menu = Menu::create($request->all()); 
+            return response()->json($menu, 201);
+
+        }
+
+
+        
+
     }
     /**
      * Mostrar un menú específico.
