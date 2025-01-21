@@ -210,12 +210,30 @@ class productos_controller extends Controller
         }
 
 
+        $idProducto = $productos->id_producto;
+
+        $productos = Productos::with(['unidadMedida', 'usuario', 'categoria'])
+        ->where('id_producto', $idProducto) // Suponiendo que 'categoria_id' es el nombre de la columna que almacena el ID de la categoría
+        ->get();
+
+        $productosFormateados = $productos->map(function ($producto) {
+            $productoArray = $producto->toArray();
+
+            $productoArray['unidad_medida'] = $producto->unidadMedida->nombre_unidad ?? 'No asignado';
+            $productoArray['usuario'] = $producto->usuario->correo ?? 'No asignado';
+            $productoArray['categoria'] = $producto->categoria->nombre_categoria ?? 'No asignado';
+
+            unset( $productoArray['id_usuario'], $productoArray['id_categoria_pro']);
+
+            return $productoArray;
+        });
+
         $categorias_productos = DB::table('categoria_count_productos')
         ->where('id_categoria_pro', $request->id_categoria_pro)
         ->get();
 
         $data = [
-            'message' => $productos,
+            'message' => $productosFormateados,
             'categoria_producto' => $categorias_productos,
             'status' => 201
 
