@@ -76,7 +76,7 @@ class reservas_item_controller extends Controller
         $reserva_item->delete();
 
         $data = [
-            'message' => "Se ha eliminado el item_id",
+            'message' => $menu,
             'status' => 200
 
         ];
