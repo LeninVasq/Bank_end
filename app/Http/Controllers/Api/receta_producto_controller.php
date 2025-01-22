@@ -6,10 +6,33 @@ use App\Models\productos;
 use App\Models\receta_producto;
 use App\Models\recetas;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class receta_producto_controller extends Controller
 {
+
+
+    public function grafica_productos_mas_utilizados(){
+
+        $menus = DB::table('grafica_productos_mas_utilizados')->get();
+
+        $data = [
+            'message' => $menus,
+            'status' => 200
+
+        ];
+        return response()->json($data, 200);
+
+    }
+
+
+
+
+
+    
+
+    
     // Actualiza todos los campos y parcialmente
     public function update(Request $request, $id)
     {

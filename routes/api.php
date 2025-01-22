@@ -34,6 +34,10 @@ Route::get('app_reservas/{id}',[reservas_controller::class, 'app_reservas']);
 
 
 
+Route::get('grafica_platillo_mas_reservado',[reservas_item_controller::class, 'grafica_platillo_mas_reservado']);
+Route::get('grafica_productos_mas_utilizados',[receta_producto_controller::class, 'grafica_productos_mas_utilizados']);
+
+
 Route::get('reservas/{id}',[reservas_controller::class, 'reservas']);
 Route::apiResource('reservas', reservas_controller::class);
 
