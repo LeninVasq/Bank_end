@@ -32,7 +32,7 @@ class reservas_controller extends Controller
             $reservas->fecha_entrega = $request->fecha_entrega;
         }
 
-
+        $reservas->estado= 0;
         $reservas->save();
 
         $data = [
@@ -43,9 +43,9 @@ class reservas_controller extends Controller
     }
 
 
-    public function reservas($id)
+    public function reservas()
     {
-        $reservas = DB::select('CALL reservas_web(?)', [$id]);
+        $reservas = DB::select('CALL reservas_web');
 
 
         $data = [
@@ -181,6 +181,9 @@ class reservas_controller extends Controller
                
                 $filter_by_reservas_item_id = reservas_item::where('id_reserva_item', $filter_reservas_item_by_menu)
                 ->pluck('id_reserva_item');   
+
+                $menu = Menu::find($request->id_menu);
+                $stockActual = $menu->cantidad_platos;
                 
                 $arrayValor = json_decode($filter_by_reservas_item_id);
                 $update = reservas_item::find( $arrayValor[0]);
@@ -193,6 +196,13 @@ class reservas_controller extends Controller
 
                 $update->cantidad = $suma_cantidad;
                 $update->save();
+
+
+                $nuevoStock = $stockActual - $request->cantidad;
+
+                $menu->cantidad_platos = $nuevoStock;
+    
+                $menu->save();
                 $data = [
                 'message' => "Se ha reservado exitosamente",
                 'status' => 201
