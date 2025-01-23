@@ -8,6 +8,7 @@ use App\Models\recetas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use App\Models\ingreso;
 
 class receta_producto_controller extends Controller
 {
@@ -226,38 +227,58 @@ public function store(Request $request)
     }
 
     public function showRecetaConProductos($id_receta)
-    {
-        // Buscar la receta con los productos asociados
-        $receta = recetas::with(['recetaProductos.producto' => function ($query) {
-            // Solo cargar la relación necesaria de unidadMedida
-            $query->with('unidadMedida');
-        }])->find($id_receta);
+{
+    // Buscar la receta con los productos asociados
+    $receta = recetas::with(['recetaProductos.producto' => function ($query) {
+        // Cargar la relación necesaria de unidadMedida y también la relación con ingresos
+        $query->with(['unidadMedida', 'ingresos']);
+    }])->find($id_receta);
 
-        if (!$receta) {
-            return response()->json([
-                'message' => 'La receta no existe',
-                'status' => 404
-            ], 404);
+    if (!$receta) {
+        return response()->json([
+            'message' => 'La receta no existe',
+            'status' => 404
+        ], 404);
+    }
+
+    // Formatear la respuesta para que contenga tanto la receta como los productos con sus detalles
+    $recetaFormateada = $receta->toArray();
+    
+    // Modificar el arreglo de receta_productos para que contenga la información que necesitamos
+    $recetaFormateada['receta_productos'] = $receta->recetaProductos->map(function ($recetaProducto) {
+        $producto = $recetaProducto->producto; // Obtenemos el producto asociado
+        $productoArray = $producto->toArray();
+
+        // Solo formateamos la relación de unidadMedida
+        $productoArray['unidad_medida'] = $producto->unidadMedida->nombre_unidad ?? 'No asignado';
+
+        // Verificar si el producto tiene ingresos y obtener el último ingreso registrado
+        if ($producto->ingresos && $producto->ingresos->isNotEmpty()) {
+            // Tomamos el costo_unitario del último ingreso registrado
+            $ultimoIngreso = $producto->ingresos->sortByDesc('created_at')->first();
+            $productoArray['costo_unitario'] = $ultimoIngreso->costo_unitario;
+        } else {
+            $productoArray['costo_unitario'] = null; // Si no hay ingresos, asignamos null
         }
 
-        // Formatear la respuesta para que contenga tanto la receta como los productos con sus detalles
-        $recetaFormateada = $receta->toArray();
-        $recetaFormateada['productos'] = $receta->recetaProductos->map(function ($recetaProducto) {
-            $producto = $recetaProducto->producto; // Obtenemos el producto asociado
-            $productoArray = $producto->toArray();
+        // Eliminar campos innecesarios para la respuesta
+        unset($productoArray['id_unidad_medida'], $productoArray['id_usuario'], $productoArray['id_categoria_pro'], $productoArray['ingresos']);
+        
+        return [
+            'id_recetas_producto' => $recetaProducto->id_recetas_producto,
+            'cantidad' => $recetaProducto->cantidad,
+            'producto' => $productoArray
+        ];
+    });
 
-            // Solo formateamos la relación de unidadMedida
-            $productoArray['unidad_medida'] = $producto->unidadMedida->nombre_unidad ?? 'No asignado';
+    // Eliminar el campo redundante 'productos'
+    unset($recetaFormateada['productos']);
 
-            // Eliminar campos innecesarios para la respuesta
-            unset($productoArray['id_unidad_medida'], $productoArray['id_usuario'], $productoArray['id_categoria_pro']);
-            return $productoArray;
-        });
+    return response()->json([
+        'message' => 'Receta encontrada con productos',
+        'status' => 200,
+        'receta' => $recetaFormateada
+    ], 200);
+}
 
-        return response()->json([
-            'message' => 'Receta encontrada con productos',
-            'status' => 200,
-            'receta' => $recetaFormateada
-        ], 200);
-    }
 }

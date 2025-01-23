@@ -90,5 +90,9 @@ class productos extends Model
         return $this->belongsTo(categoria_pro::class, 'id_categoria_pro');
     }
 
+    public function ingresos()
+    {
+        return $this->hasMany(ingreso::class, 'id_producto');  // Definimos la relación hasMany
+    }
     
 }
