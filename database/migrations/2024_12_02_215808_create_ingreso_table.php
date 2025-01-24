@@ -21,6 +21,7 @@ class CreateIngresoTable extends Migration
             $table->float('costo_total'); // Columna cantidad
             $table->float('cantidad');  // Columna cantidad
             $table->string('motivo'); // Columna motivo
+            $table->dateTime('fecha_vencimiento')->nullable(); // Columna fecha_entrega
             $table->unsignedBigInteger('id_usuario'); // Columna id_usuario como FK
             $table->boolean('estado')->default(true); // Columna estado
             $table->timestamps(); // Crea las columnas created_at y updated_at

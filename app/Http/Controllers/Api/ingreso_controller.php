@@ -163,6 +163,7 @@ class ingreso_controller extends Controller
             'tipo_movimiento' => 'required|string|in:Entrada,Salida,Creación de plato',
             'costo_unitario' => 'required|numeric',
             'costo_total' => 'sometimes|numeric',
+            'fecha_vencimiento' => 'sometimes|date|after:today',
             'cantidad' => 'required|numeric',
             'motivo' => 'sometimes|string',
         ]);
@@ -196,6 +197,7 @@ class ingreso_controller extends Controller
             'costo_unitario'  => $request->costo_unitario,
             'cantidad'        => $request->cantidad,
             'id_usuario'      => $request->id_usuario,
+            'fecha_vencimiento'  => $request->fecha_vencimiento,
             'costo_total'     => $request->costo_unitario * $request->cantidad,
             'motivo'          => $motivo,
         ]);

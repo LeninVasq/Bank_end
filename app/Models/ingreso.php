@@ -37,6 +37,7 @@ class ingreso extends Model
         'tipo_movimiento',
         'costo_unitario',
         'costo_total',
+        'fecha_vencimiento',
         'cantidad',
         'motivo',
         'id_usuario',
