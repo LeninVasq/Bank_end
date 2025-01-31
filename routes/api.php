@@ -40,6 +40,10 @@ Route::get('grafica_productos_mas_utilizados',[receta_producto_controller::class
 
 
 Route::get('reservas/{id}',[reservas_controller::class, 'reservas']);
+
+
+Route::get('app_pedidos/{id}',[reservas_controller::class, 'app_pedidos']);
+
 Route::apiResource('reservas', reservas_controller::class);
 
 Route::apiResource('reservas_item', reservas_item_controller::class);

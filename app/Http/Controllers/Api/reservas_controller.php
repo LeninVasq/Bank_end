@@ -14,6 +14,19 @@ class reservas_controller extends Controller
 {
 
 
+    public function app_pedidos($id)
+    {
+        $reservas = DB::select('CALL pedidos(?)', [$id]);
+
+
+        $data = [
+            'message' => $reservas,
+            'status' => 200
+
+        ];
+        return response()->json($data, 200); // Retorna los menús en formato JSON
+    }
+
     public function web_reservas(){
 
         $reservas = DB::table('web_reservas')->get();

@@ -226,6 +226,24 @@ GROUP BY ri.id_reservas;
                       
                              
                                                      ");
+
+
+
+
+                                                     DB::statement("
+                                         CREATE
+    PROCEDURE pedidos(IN id_usuario INT)
+
+	BEGIN
+	
+	SELECT r.id_reservas, SUM(cantidad) AS cantidad, SUM(precio * cantidad) AS precio FROM reservas r INNER JOIN reservas_item ri ON r.id_reservas = ri.id_reservas
+WHERE r.id_reservas = id_usuario
+GROUP BY r.id_reservas 
+;
+	END
+                      
+                             
+                                                     ");
             }
     
 
