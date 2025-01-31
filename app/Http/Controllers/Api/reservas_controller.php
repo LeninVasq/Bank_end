@@ -13,6 +13,22 @@ use Illuminate\Support\Facades\Validator;
 class reservas_controller extends Controller
 {
 
+
+    public function web_reservas(){
+
+        $reservas = DB::table('web_reservas')->get();
+
+        $data = [
+            'message' => $reservas,
+            'status' => 200
+
+        ];
+        return response()->json($data, 200);
+
+    }
+
+
+
     public function update(Request $request, $id)
     {
         $reservas = reservas::find($id);
@@ -43,18 +59,6 @@ class reservas_controller extends Controller
     }
 
 
-    public function reservas()
-    {
-        $reservas = DB::select('CALL reservas_web');
-
-
-        $data = [
-            'message' => $reservas,
-            'status' => 200
-
-        ];
-        return response()->json($data, 200); // Retorna los menús en formato JSON
-    }
 
     public function app_reservas($id)
     {

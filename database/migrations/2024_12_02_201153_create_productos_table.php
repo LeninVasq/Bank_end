@@ -35,14 +35,7 @@ class CreateProductosTable extends Migration
             $table->foreign('id_categoria_pro')->references('id_categoria_pro')->on('categoria_pro')->onDelete('cascade');
         });
 
-        DB::statement("
-            CREATE VIEW categoria_count_productos AS
-            SELECT c.*, COUNT(p.id_categoria_pro) AS cantidad_productos
-            FROM categoria_pro c
-            LEFT JOIN productos p ON c.id_categoria_pro = p.id_categoria_pro
-            GROUP BY c.id_categoria_pro, c.nombre_categoria, c.descripcion, c.estado, c.created_at, c.updated_at, c.foto
-            ORDER BY cantidad_productos DESC
-        ");
+      
     }
 
     /**
@@ -52,7 +45,6 @@ class CreateProductosTable extends Migration
      */
     public function down()
     {
-        DB::statement("DROP VIEW IF EXISTS categoria_count_productos");
 
         Schema::dropIfExists('productos');
     }

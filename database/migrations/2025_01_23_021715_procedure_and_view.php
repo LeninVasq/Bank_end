@@ -14,6 +14,37 @@ return new class extends Migration
     {
         //vistas
 
+
+
+        DB::statement("
+       
+CREATE
+
+    VIEW web_reservas
+    AS
+( SELECT 
+               reservas.id_reservas, 
+               SUM(reservas_item.cantidad) AS cantidad,
+               users.correo AS usuario_correo,
+                SUM(reservas_item.cantidad * reservas_item.precio )AS precio,
+               users.img
+           FROM 
+               reservas
+           INNER JOIN 
+               reservas_item ON reservas.id_reservas = reservas_item.id_reservas
+           INNER JOIN 
+               menu ON reservas_item.id_menu = menu.id_menu
+           INNER JOIN 
+               categoria_menu ON menu.id_categoria = categoria_menu.id_categoria_menu
+           INNER JOIN 
+               users ON reservas.id_usuario = users.id_usuario 
+           WHERE 
+                reservas.fecha_entrega IS NULL AND reservas.estado = 1
+                GROUP BY id_reservas, correo, img
+              );
+        ");
+
+
         DB::statement("
        CREATE
     VIEW app_categoria_menu 
@@ -150,16 +181,17 @@ END
 
 
                                DB::statement("
-                               CREATE PROCEDURE reservas_web(     
+                               CREATE PROCEDURE reservas_web(  
+                               IN id_re   INT    
        )
           
            BEGIN
-         SELECT 
+        SELECT 
                reservas.id_reservas, 
-               reservas_item.id_menu, 
+               menu.`nombre`,
                reservas_item.cantidad,
                    reservas_item.precio,
-               users.img AS foto, 
+               menu.img AS foto, 
                    menu.nombre,
                users.correo AS usuario_correo 
            FROM 
@@ -173,13 +205,27 @@ END
            INNER JOIN 
                users ON reservas.id_usuario = users.id_usuario 
            WHERE 
-                reservas.fecha_entrega IS NULL AND reservas.estado = 1;
+                reservas.id_reservas = id_re;
        END
            
                   
                                           ");
 
 
+
+                                          DB::statement("
+                                          CREATE
+    PROCEDURE app_reservas_entregada(IN id_Usuario INT)
+
+	BEGIN
+SELECT ri.id_reservas, r.fecha_entrega, SUM(ri.cantidad) AS cantidad ,
+SUM(ri.precio * ri.cantidad) AS precio_total
+FROM reservas r INNER JOIN reservas_item ri ON r.`id_reservas` =r.`id_reservas` WHERE id_usuario = id_Usuario
+GROUP BY ri.id_reservas;
+	END
+                      
+                             
+                                                     ");
             }
     
 

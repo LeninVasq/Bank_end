@@ -32,22 +32,15 @@ class reservas_item_controller extends Controller
 
     public function show($id)
     {
-        $reserva_item = DB::select('CALL app_reservas_item(?)', [$id]);
-        if (!$reserva_item) {
-            $data = [
-                'message' => 'El id de la reserva iten no existe',
-                'status' => 404
+        $reservas = DB::select('CALL reservas_web(?)', [$id]);
 
-            ];
-            return response()->json($data, 404);
-        }
 
         $data = [
-            'message' => $reserva_item,
+            'message' => $reservas,
             'status' => 200
 
         ];
-        return response()->json($data, 200);
+        return response()->json($data, 200); // Retorna los menús en formato JSON
     }
 
     public function destroy($id)
