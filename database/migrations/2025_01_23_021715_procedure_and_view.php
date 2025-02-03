@@ -236,8 +236,8 @@ GROUP BY ri.id_reservas;
 
 	BEGIN
 	
-	SELECT r.id_reservas, SUM(cantidad) AS cantidad, SUM(precio * cantidad) AS precio FROM reservas r INNER JOIN reservas_item ri ON r.id_reservas = ri.id_reservas
-WHERE r.id_reservas = id_usuario
+SELECT r.id_reservas, SUM(cantidad) AS cantidad, SUM(precio * cantidad) AS precio,fecha_entrega FROM reservas r INNER JOIN reservas_item ri ON r.id_reservas = ri.id_reservas
+WHERE r.id_usuario = 2 AND fecha_entrega IS NOT NULL
 GROUP BY r.id_reservas 
 ;
 	END

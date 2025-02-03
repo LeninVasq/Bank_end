@@ -11,6 +11,21 @@ use Illuminate\Support\Facades\DB;
 class reservas_item_controller extends Controller
 {
 
+
+    public function app_reservas_item($id)
+    {
+        $reservas = DB::select('CALL ver_item_pedidos(?)', [$id]);
+
+
+        $data = [
+            'message' => $reservas,
+            'status' => 200
+
+        ];
+        return response()->json($data, 200); // Retorna los menús en formato JSON
+    }
+
+
     public function grafica_platillo_mas_reservado(){
 
         $menus = DB::table('grafica_plato_mas_reservado')->get();
