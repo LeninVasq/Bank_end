@@ -28,7 +28,11 @@ class User extends Authenticatable
         'clave',
         'token',
         'img',
-        'estado'
+        'estado',
+        'nombre',        
+        'apellido',     
+        'carrera',       
+        'genero'    
     ];
 
   

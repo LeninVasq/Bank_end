@@ -12,23 +12,20 @@ use Illuminate\Validation\Rule;
 class usuario_controller extends Controller
 {
 
-    
-    
-    public function image_and_email($id){
+
+
+    public function image_and_email($id)
+    {
         $user = User::find($id);
-        
+
         $data = [
-            'correo'=> $user->correo,
-            'img'=> $user->img,
+            'correo' => $user->correo,
+            'img' => $user->img,
         ];
 
-        return response()->json($data, 200); 
+        return response()->json($data, 200);
 
     }
-
-
-
-
 
     //actualiza todos los campos y parcialmete
     public function update(Request $request, $id)
@@ -46,7 +43,7 @@ class usuario_controller extends Controller
 
 
 
-        $validation =  Validator::make($request->all(), [
+        $validation = Validator::make($request->all(), [
             'id_tipo_usuario' => 'sometimes|exists:tipo_usuario,id_tipo_usuario',
             'correo' => [
                 'sometimes',
@@ -54,6 +51,10 @@ class usuario_controller extends Controller
                 Rule::unique('users')->ignore($user->id_usuario, 'id_usuario'),
             ],
             'clave' => 'sometimes|min:8',
+            'nombre' => 'sometimes',
+            'apellido' => 'sometimes',
+            'carrera' => 'sometimes',
+            'genero' => 'sometimes',
             'token' => 'sometimes',
             'img' => 'sometimes|string',
             'correo_verificado' => 'sometimes|string',
@@ -77,6 +78,18 @@ class usuario_controller extends Controller
         if ($request->has('correo')) {
             $user->correo = $request->correo;
         }
+        if ($request->has('nombre')) {
+            $user->nombre = $request->nombre;
+        }
+        if ($request->has('apellido')) {
+            $user->apellido = $request->apellido;
+        }
+        if ($request->has('carrera')) {
+            $user->carrera = $request->carrera;
+        }
+        if ($request->has('genero')) {
+            $user->genero = $request->genero;
+        }
         if ($request->has('clave')) {
             $user->clave = $request->clave;
         }
@@ -95,7 +108,7 @@ class usuario_controller extends Controller
 
         $user->save();
         $data = [
-            'message' =>$user,
+            'message' => $user,
             'status' => 200
 
         ];
@@ -161,10 +174,14 @@ class usuario_controller extends Controller
             return response()->json($data, 200);
         }
 
-        $validation =  Validator::make($request->all(), [
+        $validation = Validator::make($request->all(), [
             'id_tipo_usuario' => 'required|exists:tipo_usuario,id_tipo_usuario',
             'correo' => 'required|email|unique:users',
             'clave' => 'required|min:8',
+            'nombre' => 'sometimes',
+            'apellido' => 'sometimes',
+            'carrera' => 'sometimes',
+            'genero' => 'sometimes'
         ]);
 
         if ($validation->fails()) {
@@ -179,10 +196,14 @@ class usuario_controller extends Controller
         }
 
 
-        $users  = User::create([
+        $users = User::create([
             'id_tipo_usuario' => $request->id_tipo_usuario,
             'correo' => $request->correo,
-            'clave' => $request->clave
+            'clave' => $request->clave,
+            'nombre' => $request->nombre,  // Agregado
+            'apellido' => $request->apellido,  // Agregado
+            'carrera' => $request->carrera,  // Agregado
+            'genero' => $request->genero  // Agregado
         ]);
 
         if (!$users) {
