@@ -18,9 +18,11 @@ use App\Http\Controllers\Api\menu_controller;
 use App\Http\Controllers\Api\categoria_menu_controller;
 use App\Http\Controllers\Api\reservas_controller;
 use App\Http\Controllers\Api\reservas_item_controller;
+use App\Http\Controllers\Api\ConversionUnidadMedidaController;
 use App\Models\categorias_pro;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 
 
 //apis de la aplicacion movil
@@ -112,3 +114,7 @@ Route::apiResource('menu', menu_controller::class);
 Route::apiResource('categorias_menu', categoria_menu_controller::class);
 Route::get('filter_cero', [menu_controller::class, 'menu_filter_cero']);
 Route::get('menu_filter', [menu_controller::class, 'menu_filter']);
+
+//CRUD conversor unidades de meddia
+Route::apiResource('conversiones', ConversionUnidadMedidaController::class);
+Route::get('unidades-medida', [ConversionUnidadMedidaController::class, 'listarUnidadesMedida']);
