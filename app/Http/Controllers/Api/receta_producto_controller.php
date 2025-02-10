@@ -254,12 +254,21 @@ public function store(Request $request)
 
         // Verificar si el producto tiene ingresos y obtener el último ingreso registrado
         if ($producto->ingresos && $producto->ingresos->isNotEmpty()) {
-            // Tomamos el costo_unitario del último ingreso registrado
-            $ultimoIngreso = $producto->ingresos->sortByDesc('created_at')->first();
-            $productoArray['costo_unitario'] = $ultimoIngreso->costo_unitario;
+            // Filtrar los ingresos para obtener solo aquellos cuyo tipo_movimiento sea 'Entrada' (y no 'Creación de plato')
+            $ingresosFiltrados = $producto->ingresos->where('tipo_movimiento', 'Entrada')->where('tipo_movimiento', '!=', 'Creación de plato');
+            
+            // Si hay ingresos filtrados, tomamos el más reciente
+            if ($ingresosFiltrados->isNotEmpty()) {
+                $ultimoIngreso = $ingresosFiltrados->sortByDesc('created_at')->first();
+                $productoArray['costo_unitario'] = $ultimoIngreso->costo_unitario;
+            } else {
+                // Si no hay ingresos que cumplan la condición, asignamos null
+                $productoArray['costo_unitario'] = null;
+            }
         } else {
             $productoArray['costo_unitario'] = null; // Si no hay ingresos, asignamos null
         }
+        
 
         // Eliminar campos innecesarios para la respuesta
         unset($productoArray['id_unidad_medida'], $productoArray['id_usuario'], $productoArray['id_categoria_pro'], $productoArray['ingresos']);
