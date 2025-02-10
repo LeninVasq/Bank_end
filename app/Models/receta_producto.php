@@ -23,8 +23,10 @@ class receta_producto extends Model
         'id_producto',
         'id_receta',
         'cantidad',
-        'estado'
+        'estado',
+        'nombre_unidad',  // Asegúrate de que este campo esté aquí
     ];
+    
 
     // Relación con el modelo Producto
   // En el modelo receta_producto (App\Models\receta_producto)

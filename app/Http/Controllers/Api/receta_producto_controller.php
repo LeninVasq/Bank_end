@@ -27,12 +27,6 @@ class receta_producto_controller extends Controller
 
     }
 
-
-
-
-
-    
-
     
     // Actualiza todos los campos y parcialmente
     public function update(Request $request, $id)
@@ -50,6 +44,7 @@ class receta_producto_controller extends Controller
             'id_producto' => 'sometimes|exists:productos,id_producto',
             'id_recetas' => 'sometimes|exists:recetas,id_recetas',
             'cantidad' => 'sometimes|numeric',  // Cambiado a numeric
+            'nombre_unidad' => 'sometimes|string', 
             'estado' => 'sometimes'
         ]);
 
@@ -71,6 +66,9 @@ class receta_producto_controller extends Controller
         }
         if ($request->has('cantidad')) {
             $receta_producto->cantidad = round($request->cantidad, 2);  // Redondea a 2 decimales
+        }
+        if ($request->has('nombre_unidad')) {
+            $receta_producto->nombre_unidad = $request->nombre_unidad;
         }
         if ($request->has('estado')) {
             $receta_producto->estado = $request->estado;
@@ -133,7 +131,8 @@ public function store(Request $request)
     $validation = Validator::make($request->all(), [
         'id_producto' => 'required|exists:productos,id_producto',
         'id_receta' => 'required|exists:recetas,id_recetas',
-        'cantidad' => 'required|numeric',  // Cambiado a numeric
+        'cantidad' => 'required|numeric',  
+        'nombre_unidad' => 'sometimes|string',
     ]);
 
     if ($validation->fails()) {
@@ -163,6 +162,7 @@ public function store(Request $request)
         'id_producto' => $request->id_producto,
         'id_receta' => $request->id_receta,
         'cantidad' => round($request->cantidad, 2),  // Redondea a 2 decimales
+        'nombre_unidad' =>  $request->nombre_unidad,
     ]);
 
     if (!$receta_producto) {
@@ -267,6 +267,7 @@ public function store(Request $request)
         return [
             'id_recetas_producto' => $recetaProducto->id_recetas_producto,
             'cantidad' => $recetaProducto->cantidad,
+            'nombre_unidad' => $recetaProducto->nombre_unidad,
             'producto' => $productoArray
         ];
     });
