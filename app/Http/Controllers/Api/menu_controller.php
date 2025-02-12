@@ -118,29 +118,30 @@ class menu_controller extends Controller
 
 
      public function menu_filter(Request $request)
-     {
-         // Filtramos por nombre y id_categoria_menu
-         $query = Menu::query();
-     
-         // Verificar si el parámetro id_categoria_menu está presente en la solicitud
-         if ($request->has('id_categoria') && !empty($request->id_categoria)) {
-             $id_categoria = $request->id_categoria;  // Obtener el valor del parámetro
-             $query->where('id_categoria', $id_categoria);  // Filtrar por categoría
-         } else {
-             // Si no se pasa el parámetro, puedes devolver un error o manejar el caso
-             return response()->json(['message' => 'Falta el parámetro id_categoria'], 400);
-         }
-     
-         // Obtener los resultados filtrados
-         $menus = $query->get();
-     
-         // Devolver los resultados en formato JSON
-         $data = [
-             'message' => $menus,
-             'status' => 200
-         ];
-         return response()->json($data, 200);
-     }
+{
+    // Filtramos por nombre y id_categoria_menu, excluyendo los menús con estado 0
+    $query = Menu::query();
+    
+    // Verificar si el parámetro id_categoria_menu está presente en la solicitud
+    if ($request->has('id_categoria') && !empty($request->id_categoria)) {
+        $id_categoria = $request->id_categoria;  // Obtener el valor del parámetro
+        $query->where('id_categoria', $id_categoria);  // Filtrar por categoría
+    }
+
+    // Excluir los menús cuyo estado es 0
+    $query->where('estado', '!=', 0);
+
+    // Obtener los resultados filtrados
+    $menus = $query->get();
+
+    // Devolver los resultados en formato JSON
+    $data = [
+        'message' => $menus,
+        'status' => 200
+    ];
+    return response()->json($data, 200);
+}
+
 
      public function menu_filter_cero(Request $request)
     {
