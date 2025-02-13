@@ -18,8 +18,9 @@ class usuario_controller extends Controller
     {
         $user = User::find($id);
 
+        $names = $user->nombre . " " . $user->apellido;
         $data = [
-            'correo' => $user->correo,
+            'correo' => $names,
             'img' => $user->img,
         ];
 
@@ -108,7 +109,7 @@ class usuario_controller extends Controller
 
         $user->save();
         $data = [
-            'message' => $user,
+            'message' => "Se actualizo",
             'status' => 200
 
         ];

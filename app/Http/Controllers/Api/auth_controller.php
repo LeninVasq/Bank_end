@@ -19,11 +19,10 @@ class auth_controller extends Controller
             'id_tipo_usuario' => 'required|exists:tipo_usuario,id_tipo_usuario',
             'correo' => 'required|email|unique:users,correo',
             'clave' => 'required|min:8',
-            //'clave' => 'required|min:8|confirmed',
-            //'token' => 'sometimes|string',
-            //'img' => 'sometimes|string',
-            //'correo_verificado' => 'sometimes|string',
-            //'estado' => 'sometimes'
+            'nombre' => 'sometimes',
+            'apellido' => 'sometimes',
+            'carrera' => 'sometimes',
+            'genero' => 'sometimes'
         ]);
 
         if ($validation->fails()) {
@@ -51,6 +50,11 @@ class auth_controller extends Controller
         if ($request->has('token')) {
             $user->token = $request->token;
         }
+
+        $user->nombre = $request->nombre; 
+        $user->apellido = $request->apellido;
+        $user->carrera = $request->carrera;
+       $user->genero = $request->genero ;
 
         $user->save();
 
