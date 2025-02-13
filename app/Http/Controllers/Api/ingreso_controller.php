@@ -12,6 +12,62 @@ use Illuminate\Support\Facades\Validator;
 
 class ingreso_controller extends Controller
 {
+
+    public function salio_vencido (Request $request){
+
+        $ingreso = ingreso::find($request->id_ingreso);
+
+        
+        
+        $producto = productos::find($request->id_producto);
+        $stockActual = $producto->stock;
+        if($request->cantidad > $stockActual){
+            $data = [
+                'message' => 'La cantidad de productos a retirar excede la cantidad del stock',
+                'status' => 400
+            ];
+            return response()->json($data, 400);
+        }
+        $nuevoStock = $stockActual - $request->cantidad;
+        $ingreso->estado =0;
+    
+        $ingreso->save();
+
+        $producto->update(['stock' => $nuevoStock]);
+
+        $ingresoNuevo = Ingreso::create([
+            'id_producto'     => $request->id_producto,
+            'tipo_movimiento' =>  $request->tipo_movimiento,
+            'costo_unitario'  => $request->costo_unitario,
+            'cantidad'        => $request->cantidad,
+            'id_usuario'      => $request->id_usuario,
+            'fecha_vencimiento'  => $request->fecha_vencimiento,
+            'costo_total'     => $request->costo_unitario * $request->cantidad,
+            'motivo'          => $request->motivo,
+        ]);
+        
+
+        $data = [
+            'message' => $ingreso,
+            'status' => 200
+
+        ];
+        return response()->json($data, 200);
+
+
+    }
+
+    public function vencidos(){
+        $categorias_productos = DB::table('productos_por_vencerse_0_vencidos')->get();
+
+        $data = [
+            'message' => $categorias_productos,
+            'status' => 200
+
+        ];
+        return response()->json($data, 200);
+    }
+    
     //actualiza todos los campos y parcialmete
     public function update(Request $request, $id)
     {

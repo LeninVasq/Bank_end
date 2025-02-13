@@ -42,6 +42,7 @@ Route::get('grafica_productos_mas_utilizados',[receta_producto_controller::class
 
 
 Route::get('reservas/{id}',[reservas_controller::class, 'reservas']);
+Route::get('vencidos',[ingreso_controller::class, 'vencidos']);
 
 
 Route::get('app_pedidos/{id}',[reservas_controller::class, 'app_pedidos']);
@@ -94,6 +95,7 @@ Route::apiResource('productos', productos_controller::class);
 
 //crud de ingreso
 Route::apiResource('ingreso', ingreso_controller::class);
+Route::post('salio_vencido',[ ingreso_controller::class, 'salio_vencido']); 
 
 //crud de recetas
 Route::apiResource('recetas', recetas_controller::class);
