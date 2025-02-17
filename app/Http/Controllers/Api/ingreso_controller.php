@@ -8,6 +8,7 @@ use App\Models\productos;
 use App\Models\unidad_medida;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class ingreso_controller extends Controller
@@ -219,7 +220,7 @@ class ingreso_controller extends Controller
             'tipo_movimiento' => 'required|string|in:Entrada,Salida,Creación de plato',
             'costo_unitario' => 'required|numeric',
             'costo_total' => 'sometimes|numeric',
-            'fecha_vencimiento' => 'sometimes|date|after:today',
+            'fecha_vencimiento' => 'sometimes|date',
             'cantidad' => 'required|numeric',
             'motivo' => 'sometimes|string',
         ]);
@@ -289,6 +290,7 @@ class ingreso_controller extends Controller
 
         $producto->update(['stock' => $nuevoStock]);
 
+        
         if (!$ingreso) {
             $data = [
                 'message' => 'Error al crear el ingreso',
@@ -298,15 +300,32 @@ class ingreso_controller extends Controller
             return response()->json($data, 500);
         }
 
+        $idProducto = $producto->id_producto;
+
+        $productos = Productos::with(['unidadMedida', 'usuario', 'categoria'])
+        ->where('id_producto', $idProducto) // Suponiendo que 'categoria_id' es el nombre de la columna que almacena el ID de la categoría
+        ->get();
+
+        $productosFormateados = $productos->map(function ($producto) {
+            $productoArray = $producto->toArray();
+
+            $productoArray['unidad_medida'] = $producto->unidadMedida->nombre_unidad ?? 'No asignado';
+            $productoArray['usuario'] = $producto->usuario->correo ?? 'No asignado';
+            $productoArray['categoria'] = $producto->categoria->nombre_categoria ?? 'No asignado';
+
+            unset( $productoArray['id_usuario'], $productoArray['id_categoria_pro']);
+
+            return $productoArray;
+        });
+        
 
         $data = [
-            'message' => $producto,
+            'message' => $productosFormateados,
             'status' => 201
 
         ];
         return response()->json($data, 201);
     }
-
 
     //lista todos los productos
     public function index()
