@@ -154,7 +154,7 @@ GROUP BY categoria_menu.id_categoria_menu,categoria_menu.nombre
          menu.precio          AS precio,
          menu.cantidad_platos AS cantidad_platos
      FROM menu
-     WHERE id_categoria = id_categoria_param AND cantidad_platos > 0;
+     WHERE id_categoria = id_categoria_param ;
  END");
 
 
@@ -167,7 +167,7 @@ SELECT
         `menu`.`id_menu` AS `id_menu`,
         `menu`.`img`     AS `img`
     FROM `menu`
-    WHERE `id_categoria` = id_categoria_param AND cantidad_platos > 0;
+    WHERE `id_categoria` = id_categoria_param ;
 
      END
             ");
