@@ -310,7 +310,6 @@ SELECT   m.nombre,m.img,ri.cantidad , ri.precio, ri.id_reservas FROM reservas_it
                                                                          i.fecha_vencimiento AS fecha_vencimiento,
                                                                          i.id_usuario AS id_usuario,
                                                                          i.estado AS estado,
-                                                                         i.salio AS salio,
                                                                          i.created_at AS created_at,
                                                                          i.updated_at AS updated_at,
                                                                          p.nombre AS nombre,

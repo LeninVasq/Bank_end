@@ -168,7 +168,9 @@ class ingreso_controller extends Controller
     //consulta por id
     public function show($id)
     {
-        $ingreso = ingreso::find($id);
+        //$ingreso = ingreso::find($id);
+        $ingreso = DB::select('CALL salida(?)', [$id]);
+
         if (!$ingreso) {
             $data = [
                 'message' => 'El id del ingreso no existe',
