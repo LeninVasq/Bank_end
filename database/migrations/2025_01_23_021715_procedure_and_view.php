@@ -46,6 +46,28 @@ CREATE
 
 
         DB::statement("
+       
+        CREATE
+        
+            VIEW web_reservas
+            AS
+        ( SELECT
+  `mensajes`.`id_mensajes` AS `id_mensajes`,
+  `mensajes`.`Mensaje`     AS `Mensaje`,
+  `mensajes`.`id_usuario`  AS `id_usuario`,
+  `mensajes`.`estado`      AS `estado`,
+  `mensajes`.`created_at`  AS `created_at`,
+  `mensajes`.`updated_at`  AS `updated_at`,
+  `users`.`correo`         AS `correo`
+FROM (`mensajes`
+   JOIN `users`
+     ON (`users`.`id_usuario` = `mensajes`.`id_usuario`))
+WHERE `mensajes`.`estado` = 1
+                      );
+                ");
+        
+        
+        DB::statement("
        CREATE
     VIEW app_categoria_menu 
     AS
