@@ -34,11 +34,15 @@ class mensajes extends Model
      */    protected $fillable = [
         'id_mensajes',
         'Mensaje',
-        'correo',
+        'id_usuario',
         'estado',
     ];
 
     
+    public function usuario()
+    {
+        return $this->belongsTo(User::class, 'id_usuario');
+    }
 
     protected $casts = [
         'estado' => 'boolean'
